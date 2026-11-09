@@ -1,0 +1,107 @@
+<section class="vista">
+  <header class="encabezado">
+    <div>
+      <h1><span class="texto-degradado">Usuarios</span></h1>
+      <p class="texto-suave">Personal con acceso al sistema y su rol.</p>
+    </div>
+    <button type="button" class="boton boton--primario" (click)="creando.set(true)">
+      + Nuevo usuario
+    </button>
+  </header>
+
+  @if (lista.error()) {
+    <div class="alerta" role="alert">
+      ⚠ No pudimos cargar los usuarios. Probá de nuevo en unos minutos.
+    </div>
+  } @else if (lista.isLoading()) {
+    <div class="tarjeta esqueleto usuarios__esqueleto"></div>
+  } @else {
+    <div class="tarjeta tabla-envoltura usuarios__tabla">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (usuario of lista.value(); track usuario.id) {
+            @let soyYo = usuario.id === miId();
+            <tr>
+              <td>
+                <div class="usuario">
+                  <span class="avatar">{{ iniciales(usuario.nombre) }}</span>
+                  <div>
+                    {{ usuario.nombre }}
+                    @if (soyYo) {
+                      <span class="texto-suave">(vos)</span>
+                    }
+                    <br /><span class="campo__ayuda">{{ usuario.email }}</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <select
+                  class="campo__control"
+                  [attr.aria-label]="'Rol de ' + usuario.nombre"
+                  [disabled]="soyYo || !usuario.activo"
+                  (change)="cambiarRol(usuario, $event)"
+                >
+                  @for (rol of roles; track rol) {
+                    <option [value]="rol" [selected]="rol === usuario.rol">{{ nombreDelRol[rol] }}</option>
+                  }
+                </select>
+              </td>
+              <td>
+                @if (usuario.activo) {
+                  <span class="insignia insignia--activa">Activo</span>
+                } @else {
+                  <span class="insignia insignia--inactivo">Inactivo</span>
+                }
+              </td>
+              <td>
+                @if (usuario.activo && !soyYo) {
+                  <button
+                    type="button"
+                    class="boton boton--peligro boton--chico"
+                    (click)="aDesactivar.set(usuario)"
+                  >
+                    Desactivar
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+<app-usuario-formulario
+  [abierto]="creando()"
+  (creado)="agregado($event)"
+  (cerrar)="creando.set(false)"
+/>
+
+@let desactivar = aDesactivar();
+<app-modal
+  titulo="¿Desactivar el usuario?"
+  [descripcion]="desactivar ? desactivar.nombre + ' no va a poder entrar más al sistema.' : ''"
+  ancho="min(440px, 100%)"
+  [abierto]="desactivar !== null"
+  (cerrar)="aDesactivar.set(null)"
+>
+  <div class="modal__pie">
+    <button type="button" class="boton boton--fantasma" (click)="aDesactivar.set(null)">
+      Cancelar
+    </button>
+    @if (desactivar) {
+      <button type="button" class="boton boton--peligro" (click)="confirmarDesactivacion(desactivar)">
+        Desactivar
+      </button>
+    }
+  </div>
+</app-modal>

@@ -1,0 +1,54 @@
+<app-modal titulo="Nuevo usuario" [abierto]="abierto()" (cerrar)="cancelar()">
+  <form class="modal__formulario" [formGroup]="formulario" (ngSubmit)="crear()">
+    <label class="campo" [class.campo--error]="campoInvalido('nombre')">
+      <span class="campo__etiqueta">Nombre y apellido</span>
+      <input class="campo__control" name="nombre" formControlName="nombre" />
+      @if (campoInvalido('nombre')) {
+        <span class="campo__ayuda">Ingresá el nombre.</span>
+      }
+    </label>
+
+    <label class="campo" [class.campo--error]="campoInvalido('email')">
+      <span class="campo__etiqueta">Email</span>
+      <input class="campo__control" name="email" type="email" formControlName="email" />
+      @if (campoInvalido('email')) {
+        <span class="campo__ayuda">Ingresá un email válido.</span>
+      }
+    </label>
+
+    <label class="campo" [class.campo--error]="campoInvalido('contrasena')">
+      <span class="campo__etiqueta">Contraseña</span>
+      <input
+        class="campo__control"
+        name="contrasena"
+        type="password"
+        formControlName="contrasena"
+        placeholder="Mínimo 8 caracteres"
+        autocomplete="new-password"
+      />
+      @if (campoInvalido('contrasena')) {
+        <span class="campo__ayuda">Tiene que tener al menos 8 caracteres.</span>
+      }
+    </label>
+
+    <label class="campo">
+      <span class="campo__etiqueta">Rol</span>
+      <select class="campo__control" name="rol" formControlName="rol">
+        @for (rol of roles; track rol) {
+          <option [value]="rol">{{ nombreDelRol[rol] }}</option>
+        }
+      </select>
+    </label>
+
+    @if (error()) {
+      <div class="alerta" role="alert">⚠ {{ error() }}</div>
+    }
+
+    <div class="modal__pie">
+      <button type="button" class="boton boton--fantasma" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="boton boton--primario" [disabled]="enviando()">
+        {{ enviando() ? 'Creando…' : 'Crear usuario' }}
+      </button>
+    </div>
+  </form>
+</app-modal>

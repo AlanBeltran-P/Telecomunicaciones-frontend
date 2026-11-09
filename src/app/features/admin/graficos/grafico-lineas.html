@@ -1,0 +1,103 @@
+@if (geometria(); as g) {
+  <svg
+    [attr.viewBox]="'0 0 ' + g.ancho + ' ' + alto()"
+    [attr.height]="alto()"
+    role="img"
+    [attr.aria-label]="descripcion()"
+  >
+    @for (marca of g.marcas; track marca.valor) {
+      <line [attr.x1]="g.izquierda" [attr.x2]="g.derecha" [attr.y1]="marca.y" [attr.y2]="marca.y" stroke="var(--grilla)" />
+      <text [attr.x]="g.izquierda - 8" [attr.y]="marca.y + 4" text-anchor="end">
+        {{ formatoEje()(marca.valor) }}
+      </text>
+    }
+
+    @for (etiqueta of g.etiquetasX; track etiqueta.periodo) {
+      <text [attr.x]="etiqueta.x" [attr.y]="alto() - 6" text-anchor="middle">
+        {{ etiquetaCorta(etiqueta.periodo) }}
+      </text>
+    }
+
+    @if (resaltar() >= 0) {
+      <rect
+        [attr.x]="g.xs[resaltar()] - 6"
+        [attr.y]="g.arriba"
+        width="12"
+        [attr.height]="g.abajo - g.arriba"
+        rx="3"
+        fill="rgba(148,163,184,0.10)"
+      />
+    }
+
+    @for (linea of g.lineas; track linea.nombre) {
+      @if (linea.area) {
+        <path [attr.d]="linea.area" [style.fill]="linea.color" opacity="0.1" />
+      }
+      <path
+        class="grafico-lineas__linea"
+        pathLength="1"
+        [attr.d]="linea.trazo"
+        fill="none"
+        stroke-width="2"
+        stroke-linejoin="round"
+        stroke-linecap="round"
+        [style.stroke]="linea.color"
+      />
+      <circle
+        [attr.cx]="linea.ultimo.x"
+        [attr.cy]="linea.ultimo.y"
+        r="4"
+        stroke-width="2"
+        [style.fill]="linea.color"
+        stroke="var(--superficie-grafico)"
+      />
+    }
+
+    @for (etiqueta of g.etiquetasFinales; track etiqueta.y) {
+      <text class="etiqueta-final" [attr.x]="etiqueta.x" [attr.y]="etiqueta.y">
+        {{ formatoEje()(etiqueta.valor) }}
+      </text>
+    }
+
+    @if (detalle(); as d) {
+      <line [attr.x1]="d.x" [attr.x2]="d.x" [attr.y1]="g.arriba" [attr.y2]="g.abajo" stroke="var(--borde-fuerte)" />
+      @for (fila of d.filas; track fila.nombre) {
+        <circle
+          [attr.cx]="d.x"
+          [attr.cy]="fila.y"
+          r="4"
+          stroke-width="2"
+          [style.fill]="fila.color"
+          stroke="var(--superficie-grafico)"
+        />
+      }
+    }
+
+    <rect
+      class="grafico__zona"
+      tabindex="0"
+      [attr.x]="g.izquierda - 8"
+      [attr.y]="g.arriba"
+      [attr.width]="g.derecha - g.izquierda + 16"
+      [attr.height]="g.abajo - g.arriba"
+      fill="transparent"
+      (pointermove)="seguirPuntero($event)"
+      (pointerleave)="indice.set(null)"
+      (blur)="indice.set(null)"
+      (keydown)="moverConTeclado($event)"
+    />
+  </svg>
+
+  @if (detalle(); as d) {
+    <div class="grafico-tooltip grafico-tooltip--visible grafico-lineas__detalle" role="status" [style.left.px]="d.x">
+      <div class="grafico-tooltip__titulo">{{ d.titulo }}</div>
+      @for (fila of d.filas; track fila.nombre) {
+        <div class="grafico-tooltip__fila">
+          <span class="grafico-tooltip__clave" [style.background]="fila.color"></span>
+          <strong>{{ fila.valor }}</strong>
+          <span>{{ fila.nombre }}</span>
+        </div>
+      }
+    </div>
+  }
+}

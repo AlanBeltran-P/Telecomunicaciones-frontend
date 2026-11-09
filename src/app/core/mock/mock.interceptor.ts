@@ -10,6 +10,7 @@ import { environment } from '../../../environments/environment';
 import { MockDb } from './mock-db';
 import { ErrorMock } from './respuestas';
 import { RutaMock } from './ruta-mock';
+import { RUTAS_ADMIN } from './rutas/admin.mock';
 import { RUTAS_AUTH } from './rutas/auth.mock';
 import { RUTAS_CLIENTES } from './rutas/clientes.mock';
 import { RUTAS_CONTRATACIONES } from './rutas/contrataciones.mock';
@@ -30,6 +31,7 @@ const RUTAS: RutaMock[] = [
   ...RUTAS_NOTIFICACIONES,
   ...RUTAS_CLIENTES,
   ...RUTAS_INSTALACIONES,
+  ...RUTAS_ADMIN,
 ];
 
 /** Modo mock: responde los pedidos a /api con datos en memoria, sin llamar al backend. */

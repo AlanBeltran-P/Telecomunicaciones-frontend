@@ -1,0 +1,11 @@
+.planes-admin__nombre {
+  margin: 0;
+}
+
+.planes-admin__precio {
+  font-size: var(--texto-lg);
+}
+
+.planes-admin__esqueleto {
+  height: 180px;
+}

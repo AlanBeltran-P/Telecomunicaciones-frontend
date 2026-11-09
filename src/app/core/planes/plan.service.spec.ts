@@ -19,4 +19,23 @@ describe('PlanService', () => {
     expect(recibidos).toEqual(planes);
     backend.verify();
   });
+
+  it('el administrador crea, edita y da de baja planes', () => {
+    TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting()] });
+    const backend = TestBed.inject(HttpTestingController);
+    const servicio = TestBed.inject(PlanService);
+    const datos = { nombre: 'Fibra 500', descripcion: null, precio: 22000 };
+
+    servicio.crear(datos).subscribe();
+    const alta = backend.expectOne({ method: 'POST', url: '/api/planes' });
+    expect(alta.request.body).toEqual(datos);
+    alta.flush({ id: 7, ...datos });
+
+    servicio.actualizar(7, datos).subscribe();
+    backend.expectOne({ method: 'PUT', url: '/api/planes/7' }).flush({ id: 7, ...datos });
+
+    servicio.darDeBaja(7).subscribe();
+    backend.expectOne({ method: 'DELETE', url: '/api/planes/7' }).flush(null);
+    backend.verify();
+  });
 });
