@@ -1,0 +1,36 @@
+@if (planes.isLoading()) {
+  <div class="planes__grilla" aria-busy="true">
+    @for (n of [1, 2, 3]; track n) {
+      <div class="tarjeta plan-esqueleto">
+        <div class="esqueleto" style="height: 28px; width: 60%"></div>
+        <div class="esqueleto" style="height: 14px"></div>
+        <div class="esqueleto" style="height: 14px; width: 80%"></div>
+        <div class="esqueleto" style="height: 44px; width: 50%"></div>
+        <div class="esqueleto" style="height: 44px; border-radius: 999px"></div>
+      </div>
+    }
+  </div>
+} @else if (planes.error()) {
+  <div class="alerta" role="alert">⚠ No pudimos cargar los planes. Probá de nuevo en un rato.</div>
+} @else if (planes.value().length === 0) {
+  <p class="texto-suave">Pronto vamos a publicar nuevos planes.</p>
+} @else {
+  <div class="planes__grilla escalonado">
+    @for (plan of planes.value(); track plan.id) {
+      @let esRecomendado = plan === recomendado();
+      <article class="tarjeta tarjeta--interactiva plan" [class.borde-giratorio]="esRecomendado">
+        @if (esRecomendado) {
+          <span class="plan__cinta">Recomendado</span>
+        }
+        <h3 class="plan__nombre">{{ plan.nombre }}</h3>
+        <p class="texto-suave">{{ plan.descripcion }}</p>
+        <p class="plan__precio" [class.texto-degradado]="esRecomendado">
+          {{ plan.precio | currency: 'ARS' : 'symbol-narrow' : '1.0-0' }} <small>/ mes</small>
+        </p>
+        <a class="boton" [class.boton--primario]="esRecomendado" [routerLink]="destinoContratar()">
+          Contratar
+        </a>
+      </article>
+    }
+  </div>
+}

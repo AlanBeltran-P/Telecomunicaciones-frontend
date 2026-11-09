@@ -1,0 +1,314 @@
+<!-- ========== Navegación ========== -->
+<header class="navegacion">
+  <div class="contenedor navegacion__fila">
+    <a class="logo" routerLink="/">
+      <span class="logo__marca">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#04121a" stroke-width="2.4" stroke-linecap="round">
+          <path d="M5 12a7 7 0 0 1 14 0M8.5 12a3.5 3.5 0 0 1 7 0" />
+          <circle cx="12" cy="12" r="1.2" fill="#04121a" />
+        </svg>
+      </span>
+      Systema Tele
+    </a>
+    <nav class="navegacion__enlaces" aria-label="Secciones">
+      <a routerLink="/" fragment="servicios">Servicios</a>
+      <a routerLink="/" fragment="como-funciona">Cómo funciona</a>
+      <a routerLink="/" fragment="cobertura">Cobertura</a>
+      <a routerLink="/" fragment="planes">Planes</a>
+      <a routerLink="/" fragment="ayuda">Ayuda</a>
+    </nav>
+    <div class="navegacion__acciones">
+      @if (autenticado()) {
+        <a class="boton boton--primario" [routerLink]="miCuenta()">Mi cuenta</a>
+      } @else {
+        <a class="boton" routerLink="/login">Ingresar</a>
+        <a class="boton boton--primario" routerLink="/registro">Crear cuenta</a>
+      }
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ========== Héroe ========== -->
+  <section class="contenedor heroe">
+    <div class="escalonado">
+      <span class="heroe__etiqueta">Red de fibra óptica activa</span>
+      <h1>Conectividad a la <span class="texto-degradado">velocidad de la luz</span></h1>
+      <p class="heroe__texto">
+        Internet por fibra, televisión, telefonía móvil y soluciones para empresas. Contratá online,
+        seguí la instalación desde tu cuenta y pagá como quieras.
+      </p>
+      <div class="heroe__botones">
+        <a class="boton boton--primario boton--grande" routerLink="/" fragment="planes">Ver planes</a>
+        <a class="boton boton--grande" routerLink="/" fragment="servicios">Conocé los servicios</a>
+      </div>
+      <div class="heroe__datos">
+        <div class="heroe__dato"><strong>1 Gb</strong><span>simétrico</span></div>
+        <div class="heroe__dato"><strong>+120</strong><span>canales HD</span></div>
+        <div class="heroe__dato"><strong>4</strong><span>formas de pago</span></div>
+      </div>
+    </div>
+
+    <!-- Ilustración: los dispositivos de la casa conectados por fibra a un núcleo -->
+    <app-red-fibra />
+  </section>
+
+  <!-- ========== Servicios ========== -->
+  <section class="contenedor seccion-home" id="servicios">
+    <div class="seccion-home__titulo" appRevelar>
+      <span class="antetitulo">Servicios</span>
+      <h2>Todo lo que necesitás para estar <span class="texto-degradado">conectado</span></h2>
+      <p>Combiná los servicios que quieras. Todo se gestiona desde una sola cuenta.</p>
+    </div>
+
+    <div class="servicios">
+      <article class="tarjeta tarjeta--interactiva servicio" appRevelar>
+        <div class="servicio__ilustracion" aria-hidden="true"><app-ilustracion-internet /></div>
+        <h3>Internet por fibra</h3>
+        <p class="texto-suave">
+          Velocidad simétrica para trabajar, estudiar y jugar sin cortes. Wi-Fi 6 incluido en todos
+          los planes.
+        </p>
+        <ul class="servicio__lista">
+          <li>300 Mb a 1 Gb</li>
+          <li>Simétrico</li>
+          <li>Wi-Fi 6</li>
+        </ul>
+        <a class="servicio__enlace" routerLink="/" fragment="planes">Ver planes →</a>
+      </article>
+
+      <article class="tarjeta tarjeta--interactiva servicio" appRevelar style="--retraso: 120ms">
+        <div class="servicio__ilustracion" aria-hidden="true"><app-ilustracion-tv /></div>
+        <h3>Televisión</h3>
+        <p class="texto-suave">
+          Más de 120 canales en HD en tu tele, celular o compu. Sumala a tu plan de fibra en un combo.
+        </p>
+        <ul class="servicio__lista">
+          <li>+120 canales HD</li>
+          <li>En todos tus dispositivos</li>
+          <li>Combo con fibra</li>
+        </ul>
+        <a class="servicio__enlace" routerLink="/" fragment="planes">Ver planes →</a>
+      </article>
+
+      <article class="tarjeta tarjeta--interactiva servicio" appRevelar>
+        <div class="servicio__ilustracion" aria-hidden="true"><app-ilustracion-movil /></div>
+        <h3>Telefonía móvil</h3>
+        <p class="texto-suave">
+          Líneas con datos, llamadas y mensajes. Manejá el consumo y las facturas desde la misma
+          cuenta.
+        </p>
+        <ul class="servicio__lista">
+          <li>Datos móviles</li>
+          <li>Llamadas ilimitadas</li>
+          <li>Misma factura</li>
+        </ul>
+        <a class="servicio__enlace" routerLink="/" fragment="planes">Ver planes →</a>
+      </article>
+
+      <article class="tarjeta tarjeta--interactiva servicio" appRevelar style="--retraso: 120ms">
+        <div class="servicio__ilustracion" aria-hidden="true"><app-ilustracion-empresa /></div>
+        <h3>Telefonía fija y empresas</h3>
+        <p class="texto-suave">
+          Líneas fijas y conectividad para pymes y oficinas, con varias sucursales administradas en
+          un solo lugar.
+        </p>
+        <ul class="servicio__lista">
+          <li>Línea fija</li>
+          <li>Oficinas y pymes</li>
+          <li>Varias sedes</li>
+        </ul>
+        <a class="servicio__enlace" routerLink="/" fragment="planes">Ver planes →</a>
+      </article>
+    </div>
+  </section>
+
+  <!-- ========== Cómo funciona ========== -->
+  <section class="contenedor seccion-home" id="como-funciona">
+    <div class="seccion-home__titulo" appRevelar>
+      <span class="antetitulo">Cómo funciona</span>
+      <h2>De la web a tu casa en <span class="texto-degradado">cuatro pasos</span></h2>
+    </div>
+    <div class="pasos-home" appRevelar>
+      <div class="paso-home" style="--retraso: 0ms">
+        <span class="paso-home__numero">1</span>
+        <h3>Elegí tu plan</h3>
+        <p>Compará los planes y precios finales en pesos.</p>
+      </div>
+      <div class="paso-home" style="--retraso: 400ms">
+        <span class="paso-home__numero">2</span>
+        <h3>Contratá online</h3>
+        <p>Creá tu cuenta y decinos dónde querés el servicio.</p>
+      </div>
+      <div class="paso-home" style="--retraso: 800ms">
+        <span class="paso-home__numero">3</span>
+        <h3>Te instalamos</h3>
+        <p>Un técnico hace la instalación y seguís el avance desde tu cuenta.</p>
+      </div>
+      <div class="paso-home" style="--retraso: 1200ms">
+        <span class="paso-home__numero">4</span>
+        <h3>Pagá como quieras</h3>
+        <p>Tarjeta, Mercado Pago, PayPal o débito automático.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Cobertura ========== -->
+  <section class="contenedor seccion-home" id="cobertura">
+    <div class="cobertura">
+      <div appRevelar>
+        <span class="antetitulo">Cobertura</span>
+        <h2>Una red que <span class="texto-degradado">crece con vos</span></h2>
+        <p class="texto-suave">Ya llegamos a estas ciudades y seguimos sumando barrios todos los meses.</p>
+        <ul class="ciudades">
+          @for (ciudad of ciudades; track ciudad) {
+            <li>{{ ciudad }}</li>
+          }
+        </ul>
+      </div>
+
+      <div class="mapa-red" appRevelar style="--retraso: 150ms" aria-hidden="true">
+        <app-mapa-red />
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Números ========== -->
+  <section class="contenedor">
+    <div class="numeros">
+      <div class="tarjeta numero-home" appRevelar>
+        <p class="numero-home__valor">
+          <span class="texto-degradado"><span [appContar]="1000"></span> Mb</span>
+        </p>
+        <p class="numero-home__etiqueta">de velocidad simétrica</p>
+      </div>
+      <div class="tarjeta numero-home" appRevelar style="--retraso: 100ms">
+        <p class="numero-home__valor">+<span [appContar]="120"></span></p>
+        <p class="numero-home__etiqueta">canales en HD</p>
+      </div>
+      <div class="tarjeta numero-home" appRevelar style="--retraso: 200ms">
+        <p class="numero-home__valor"><span [appContar]="8"></span></p>
+        <p class="numero-home__etiqueta">ciudades con cobertura</p>
+      </div>
+      <div class="tarjeta numero-home" appRevelar style="--retraso: 300ms">
+        <p class="numero-home__valor"><span [appContar]="4"></span></p>
+        <p class="numero-home__etiqueta">formas de pago</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Planes · GET /api/planes ========== -->
+  <section class="contenedor seccion-home" id="planes">
+    <div class="seccion-home__titulo" appRevelar>
+      <span class="antetitulo">Planes</span>
+      <h2>Elegí tu <span class="texto-degradado">plan</span></h2>
+      <p>Precios finales en pesos, por mes.</p>
+    </div>
+    <app-planes-home />
+  </section>
+
+  <!-- ========== Preguntas frecuentes ========== -->
+  <section class="contenedor seccion-home" id="ayuda">
+    <div class="seccion-home__titulo" appRevelar>
+      <span class="antetitulo">Ayuda</span>
+      <h2>Preguntas <span class="texto-degradado">frecuentes</span></h2>
+    </div>
+    <div class="preguntas" appRevelar>
+      <details class="tarjeta pregunta">
+        <summary>¿Cuándo me llega la primera factura?</summary>
+        <p class="pregunta__respuesta">
+          Un mes después de contratar. Cada factura vence a los 10 días de emitida y te avisamos en
+          la app y por email.
+        </p>
+      </details>
+      <details class="tarjeta pregunta">
+        <summary>¿Qué pasa si no pago a tiempo?</summary>
+        <p class="pregunta__respuesta">
+          Te avisamos cuando la factura vence. Si a los 14 días sigue sin pagarse, el servicio se
+          suspende; cuando la pagás, lo reactivamos.
+        </p>
+      </details>
+      <details class="tarjeta pregunta">
+        <summary>¿Cómo puedo pagar?</summary>
+        <p class="pregunta__respuesta">
+          Con tarjeta de débito o crédito, Mercado Pago o PayPal. Los datos de la tarjeta los procesa
+          el proveedor de pagos: nunca pasan por nuestros servidores.
+        </p>
+      </details>
+      <details class="tarjeta pregunta">
+        <summary>¿Puedo activar el débito automático?</summary>
+        <p class="pregunta__respuesta">
+          Sí, desde tu cuenta. Elegís el medio de pago y cobramos cada factura el día que se emite.
+        </p>
+      </details>
+      <details class="tarjeta pregunta">
+        <summary>¿Cómo sigo la instalación?</summary>
+        <p class="pregunta__respuesta">
+          Desde tu cuenta ves en qué paso está: contratado, técnico asignado e instalado. Cuando el
+          técnico termina, el plan queda activo.
+        </p>
+      </details>
+    </div>
+  </section>
+
+  <!-- ========== Cierre ========== -->
+  <section class="contenedor seccion-home">
+    <div class="tarjeta borde-giratorio cierre" appRevelar>
+      <h2>¿Listo para <span class="texto-degradado">conectarte</span>?</h2>
+      <p>Creá tu cuenta en un minuto y elegí el plan que mejor te queda.</p>
+      <div class="heroe__botones cierre__botones">
+        <a class="boton boton--primario boton--grande" routerLink="/registro">Crear cuenta</a>
+        <a class="boton boton--grande" routerLink="/" fragment="planes">Ver planes</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ========== Pie ========== -->
+<footer class="contenedor pie">
+  <div class="pie__columnas">
+    <div>
+      <a class="logo" routerLink="/">
+        <span class="logo__marca">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#04121a" stroke-width="2.4" stroke-linecap="round">
+            <path d="M5 12a7 7 0 0 1 14 0M8.5 12a3.5 3.5 0 0 1 7 0" />
+            <circle cx="12" cy="12" r="1.2" fill="#04121a" />
+          </svg>
+        </span>
+        Systema Tele
+      </a>
+      <p class="texto-suave pie__lema">Internet, televisión y telefonía en un solo lugar.</p>
+    </div>
+    <div>
+      <h4>Servicios</h4>
+      <ul>
+        <li><a routerLink="/" fragment="servicios">Internet por fibra</a></li>
+        <li><a routerLink="/" fragment="servicios">Televisión</a></li>
+        <li><a routerLink="/" fragment="servicios">Telefonía móvil</a></li>
+        <li><a routerLink="/" fragment="servicios">Empresas</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tu cuenta</h4>
+      <ul>
+        <li><a routerLink="/login">Ingresar</a></li>
+        <li><a routerLink="/registro">Crear cuenta</a></li>
+        <li><a routerLink="/" fragment="planes">Planes</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Ayuda</h4>
+      <ul>
+        <li><a routerLink="/" fragment="ayuda">Preguntas frecuentes</a></li>
+        <li><a routerLink="/" fragment="cobertura">Cobertura</a></li>
+        <li><a routerLink="/" fragment="como-funciona">Cómo funciona</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="pie__legal">
+    <span>© 2026 Systema Tele</span>
+    @if (modoDemo) {
+      <span>Modo demo — los datos son de ejemplo</span>
+    }
+  </div>
+</footer>

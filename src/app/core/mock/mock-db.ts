@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ErrorMock } from './respuestas';
+import { PLANES_MOCK, PlanMock } from './datos/planes.mock';
 import { USUARIOS_MOCK, UsuarioMock } from './datos/usuarios.mock';
 
 const CLAVE_SESION = 'systema-tele.mock.sesion';
@@ -12,6 +13,7 @@ const CLAVE_SESION = 'systema-tele.mock.sesion';
 @Injectable({ providedIn: 'root' })
 export class MockDb {
   usuarios: UsuarioMock[] = structuredClone(USUARIOS_MOCK);
+  planes: PlanMock[] = structuredClone(PLANES_MOCK);
   private ultimoId = 1000;
 
   nuevoId(): number {
