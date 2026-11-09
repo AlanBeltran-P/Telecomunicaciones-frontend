@@ -1,0 +1,53 @@
+<section class="vista">
+  <header class="encabezado">
+    <div>
+      <h1><span class="texto-degradado">Notificaciones</span></h1>
+      <p class="texto-suave">Tocá una para marcarla como leída.</p>
+    </div>
+    <button
+      type="button"
+      class="boton"
+      [disabled]="notificaciones.noLeidas() === 0"
+      (click)="notificaciones.marcarTodas()"
+    >
+      Marcar todas como leídas
+    </button>
+  </header>
+
+  @if (notificaciones.error(); as error) {
+    <div class="alerta" role="alert">⚠ {{ error }}</div>
+  }
+
+  @if (notificaciones.lista().length > 0) {
+    <div class="tarjeta escalonado notificaciones__lista">
+      @for (aviso of notificaciones.lista(); track aviso.id) {
+        <div
+          class="notificacion"
+          role="button"
+          tabindex="0"
+          [style.--i]="$index"
+          [class.notificacion--leida]="aviso.leida"
+          (click)="notificaciones.marcarLeida(aviso)"
+          (keydown.enter)="notificaciones.marcarLeida(aviso)"
+        >
+          <span class="notificacion__punto"></span>
+          <div>
+            <p class="notificacion__asunto">{{ aviso.asunto }}</p>
+            <p class="notificacion__mensaje">{{ aviso.mensaje }}</p>
+          </div>
+          <span class="notificacion__fecha">{{ aviso.fecha | date: 'dd/MM · HH:mm' }}</span>
+        </div>
+      }
+    </div>
+  } @else if (notificaciones.cargando()) {
+    <div class="tarjeta esqueleto notificaciones__esqueleto"></div>
+  } @else {
+    <article class="tarjeta estado-vacio">
+      <span class="estado-vacio__icono"><app-icono nombre="campana" /></span>
+      <h2 class="tarjeta__titulo">No tenés notificaciones</h2>
+      <p class="texto-suave">
+        Te avisamos acá y por email cuando haya una factura nueva o un cambio en tus planes.
+      </p>
+    </article>
+  }
+</section>

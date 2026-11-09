@@ -1,0 +1,64 @@
+/* Pantallas con sesión: estilos que en el prototipo estaban dentro de cliente.html */
+
+/* <router-outlet> queda como un hijo vacío de la grilla y sumaría un espacio de más */
+.contenido router-outlet {
+  display: none;
+}
+
+.contratacion {
+  display: grid;
+  gap: var(--espacio-2);
+  align-content: start;
+}
+
+.contratacion__cabeza {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--espacio-3);
+}
+
+.contratacion__dato {
+  font-size: var(--texto-sm);
+  color: var(--texto-suave);
+}
+
+.dos-columnas {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: var(--espacio-4);
+  align-items: start;
+}
+
+.atencion {
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+.debito {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-5);
+}
+
+.nota-segura {
+  display: flex;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3) var(--espacio-4);
+  border-radius: var(--radio-md);
+  background: var(--degradado-suave);
+  font-size: var(--texto-sm);
+  color: var(--texto-suave);
+}
+
+/* Formularios dentro de un modal */
+.modal__formulario {
+  display: grid;
+  gap: var(--espacio-4);
+}
+
+@media (max-width: 900px) {
+  .dos-columnas {
+    grid-template-columns: 1fr;
+  }
+}

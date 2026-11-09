@@ -1,0 +1,69 @@
+<section class="vista">
+  <header class="encabezado">
+    <div>
+      <h1>Mi <span class="texto-degradado">perfil</span></h1>
+      <p class="texto-suave">Tus datos y tu cuenta.</p>
+    </div>
+  </header>
+
+  @if (perfil(); as perfil) {
+    <div class="dos-columnas escalonado">
+      <article class="tarjeta" style="--i: 0">
+        <div class="mi-perfil__cabeza">
+          <span class="avatar mi-perfil__avatar">{{ iniciales() }}</span>
+          <div>
+            <h2 class="tarjeta__titulo mi-perfil__nombre">{{ perfil.nombre }}</h2>
+            <span class="insignia insignia--rol">{{ nombreDelRol() }}</span>
+          </div>
+        </div>
+        <div class="fila-resumen">
+          <span class="texto-suave">Email</span><span>{{ perfil.email }}</span>
+        </div>
+        @if (perfil.dni) {
+          <div class="fila-resumen">
+            <span class="texto-suave">DNI</span><span>{{ perfil.dni }}</span>
+          </div>
+        }
+        @if (perfil.telefono) {
+          <div class="fila-resumen">
+            <span class="texto-suave">Teléfono</span><span>{{ perfil.telefono }}</span>
+          </div>
+        }
+        <p class="campo__ayuda mi-perfil__ayuda">
+          {{
+            perfil.rol === 'CLIENTE'
+              ? 'Para cambiar tus datos comunicate con atención al cliente.'
+              : 'Para cambiar tus datos hablá con un administrador.'
+          }}
+        </p>
+      </article>
+
+      <article class="tarjeta" style="--i: 1">
+        <h2 class="tarjeta__titulo">Sesión</h2>
+        <p class="texto-suave mi-perfil__ayuda-sesion">
+          Por seguridad, la sesión se cierra sola a las 8 horas.
+        </p>
+        <button type="button" class="boton boton--peligro" (click)="confirmandoSalida.set(true)">
+          Cerrar sesión
+        </button>
+      </article>
+    </div>
+  }
+</section>
+
+<app-modal
+  titulo="¿Cerrar sesión?"
+  descripcion="Para volver a entrar vas a necesitar tu email y contraseña."
+  ancho="min(420px, 100%)"
+  [abierto]="confirmandoSalida()"
+  (cerrar)="confirmandoSalida.set(false)"
+>
+  <div class="modal__pie">
+    <button type="button" class="boton boton--fantasma" (click)="confirmandoSalida.set(false)">
+      Cancelar
+    </button>
+    <button type="button" class="boton boton--primario" (click)="cerrarSesion()">
+      Cerrar sesión
+    </button>
+  </div>
+</app-modal>

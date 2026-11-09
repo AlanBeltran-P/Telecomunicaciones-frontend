@@ -1,0 +1,11 @@
+.facturas__tabla {
+  padding: 8px;
+}
+
+.facturas__pago {
+  font-size: var(--texto-xs);
+}
+
+.facturas__esqueleto {
+  height: 240px;
+}

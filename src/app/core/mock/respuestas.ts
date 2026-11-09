@@ -1,7 +1,8 @@
 import { HttpResponse } from '@angular/common/http';
 
+/** Devuelve una copia: la pantalla no comparte objetos con la "base" en memoria, igual que con un backend real. */
 export function respuesta<T>(cuerpo: T, status = 200): HttpResponse<T> {
-  return new HttpResponse({ status, body: cuerpo });
+  return new HttpResponse({ status, body: structuredClone(cuerpo) });
 }
 
 export function sinContenido(): HttpResponse<null> {

@@ -1,0 +1,8 @@
+.mis-planes__accion {
+  justify-self: start;
+  margin-top: var(--espacio-2);
+}
+
+.mis-planes__esqueleto {
+  height: 150px;
+}

@@ -1,0 +1,24 @@
+.mi-perfil__cabeza {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-4);
+  margin-bottom: var(--espacio-5);
+}
+
+.mi-perfil__avatar {
+  width: 64px;
+  height: 64px;
+  font-size: 1.25rem;
+}
+
+.mi-perfil__nombre {
+  margin: 0;
+}
+
+.mi-perfil__ayuda {
+  margin-top: var(--espacio-3);
+}
+
+.mi-perfil__ayuda-sesion {
+  margin-bottom: var(--espacio-3);
+}

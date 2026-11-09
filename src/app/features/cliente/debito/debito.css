@@ -1,0 +1,31 @@
+.debito__contenido {
+  max-width: 760px;
+  display: grid;
+  gap: var(--espacio-4);
+}
+
+.debito__medio {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-4);
+}
+
+.debito__icono {
+  width: 52px;
+  height: 36px;
+  font-size: 13px;
+}
+
+.debito__titulo {
+  margin: 0;
+}
+
+.debito__acciones {
+  display: flex;
+  gap: var(--espacio-3);
+  flex-wrap: wrap;
+}
+
+.debito__esqueleto {
+  height: 120px;
+}

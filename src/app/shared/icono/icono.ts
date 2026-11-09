@@ -16,6 +16,9 @@ const TRAZOS = {
   grafico: 'M3 3v18h18M7 15l4-5 3 3 5-6',
   perfil: 'M8 8a4 4 0 1 0 8 0a4 4 0 1 0-8 0M4 21a8 8 0 0 1 16 0',
   salir: 'M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9',
+  tarjeta: 'M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zM2 10h20',
+  calendario:
+    'M6 4h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3zM16 2v4M8 2v4M3 10h18',
 };
 
 export type NombreIcono = keyof typeof TRAZOS;

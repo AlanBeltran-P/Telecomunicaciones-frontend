@@ -1,0 +1,13 @@
+/* "domingo 8 de noviembre" → "Domingo 8 de noviembre" */
+.inicio__fecha::first-letter {
+  text-transform: uppercase;
+}
+
+.inicio__ir {
+  justify-self: start;
+  margin-top: var(--espacio-4);
+}
+
+.inicio__esqueleto {
+  height: 140px;
+}

@@ -12,7 +12,12 @@
 
     <nav class="menu">
       @for (item of menu(); track item.ruta) {
-        <a class="menu__item" [routerLink]="item.ruta" routerLinkActive="menu__item--activo">
+        <a
+          class="menu__item"
+          [routerLink]="item.ruta"
+          routerLinkActive="menu__item--activo"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
           <app-icono [nombre]="item.icono" />
           {{ item.texto }}
         </a>

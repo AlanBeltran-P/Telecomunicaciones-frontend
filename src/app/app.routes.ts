@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
-import { invitadoGuard } from './core/guards/auth.guard';
+import { authGuard, invitadoGuard, rolGuard } from './core/guards/auth.guard';
+import { Shell } from './core/layout/shell/shell';
+import { MENU_CLIENTE } from './features/cliente/menu-cliente';
 
 const acceso = () => import('./features/auth/acceso/acceso').then((m) => m.Acceso);
 
@@ -22,6 +24,13 @@ export const routes: Routes = [
     canActivate: [invitadoGuard],
     loadComponent: acceso,
     data: { pestana: 'registro' },
+  },
+  {
+    path: 'cliente',
+    component: Shell,
+    canActivate: [authGuard, rolGuard('CLIENTE')],
+    data: { menu: MENU_CLIENTE },
+    loadChildren: () => import('./features/cliente/cliente.routes').then((m) => m.RUTAS_CLIENTE),
   },
   { path: '**', redirectTo: '' },
 ];
