@@ -1,0 +1,4 @@
+.ficha-cliente__esqueleto {
+  height: 160px;
+  border-radius: var(--radio-md);
+}

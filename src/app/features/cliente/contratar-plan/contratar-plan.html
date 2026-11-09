@@ -1,6 +1,6 @@
 <app-modal
-  titulo="Contratar un plan"
-  descripcion="Te avisamos cuando asignemos un técnico para la instalación."
+  [titulo]="titulo()"
+  [descripcion]="descripcion()"
   [abierto]="abierto()"
   (cerrar)="cancelar()"
 >

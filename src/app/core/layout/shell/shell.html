@@ -16,7 +16,7 @@
           class="menu__item"
           [routerLink]="item.ruta"
           routerLinkActive="menu__item--activo"
-          [routerLinkActiveOptions]="{ exact: true }"
+          [routerLinkActiveOptions]="{ exact: $first }"
         >
           <app-icono [nombre]="item.icono" />
           {{ item.texto }}

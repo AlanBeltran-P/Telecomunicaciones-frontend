@@ -62,3 +62,170 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- Empleado (estilos de empleado.html) ---------- */
+
+.buscador {
+  position: relative;
+  flex: 1;
+  max-width: 420px;
+}
+
+.buscador svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  width: 18px;
+  transform: translateY(-50%);
+  color: var(--texto-tenue);
+}
+
+.buscador .campo__control {
+  padding-left: 42px;
+}
+
+.ficha {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--espacio-5);
+  align-items: start;
+}
+
+.ficha__datos {
+  display: grid;
+  gap: var(--espacio-3);
+  font-size: var(--texto-sm);
+}
+
+.ficha__datos dt {
+  color: var(--texto-tenue);
+  font-size: var(--texto-xs);
+}
+
+.fila-contratacion {
+  display: grid;
+  grid-template-columns: 1fr auto 110px;
+  align-items: center;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3) 0;
+  border-bottom: 1px solid var(--borde);
+}
+
+.fila-contratacion:last-child {
+  border-bottom: none;
+}
+
+.instalacion {
+  display: grid;
+  gap: var(--espacio-3);
+  align-content: start;
+}
+
+.instalacion__asignar {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+/* ---------- Técnico (estilos de tecnico.html) ---------- */
+
+.trabajos {
+  display: grid;
+  gap: var(--espacio-4);
+  max-width: 760px;
+}
+
+.trabajo {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--espacio-5);
+}
+
+/* Pin de ubicación con un radar que late */
+.trabajo__pin {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: var(--degradado-suave);
+  color: var(--cian);
+}
+
+.trabajo__pin svg {
+  width: 24px;
+}
+
+.trabajo__pin--radar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  border: 1px solid var(--cian);
+  animation: radar 2.4s var(--curva) infinite;
+}
+
+.trabajo__pin--hecho {
+  color: var(--exito);
+}
+
+@keyframes radar {
+  from {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.trabajo__titulo {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  .ficha {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .trabajo {
+    grid-template-columns: auto 1fr;
+  }
+
+  .trabajo > .boton {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Dos campos en la misma fila (DNI y teléfono) */
+.formulario__fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espacio-3);
+}
+
+/* Pantallas del técnico */
+.tecnico__fecha::first-letter {
+  text-transform: uppercase;
+}
+
+.tecnico__direccion {
+  margin: 0;
+}
+
+.tecnico__kpis,
+.tecnico__vacio {
+  max-width: 760px;
+}
+
+.tecnico__esqueleto {
+  height: 110px;
+}

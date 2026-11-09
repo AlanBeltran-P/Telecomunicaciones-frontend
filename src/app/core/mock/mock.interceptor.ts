@@ -11,8 +11,10 @@ import { MockDb } from './mock-db';
 import { ErrorMock } from './respuestas';
 import { RutaMock } from './ruta-mock';
 import { RUTAS_AUTH } from './rutas/auth.mock';
+import { RUTAS_CLIENTES } from './rutas/clientes.mock';
 import { RUTAS_CONTRATACIONES } from './rutas/contrataciones.mock';
 import { RUTAS_FACTURAS } from './rutas/facturas.mock';
+import { RUTAS_INSTALACIONES } from './rutas/instalaciones.mock';
 import { RUTAS_NOTIFICACIONES } from './rutas/notificaciones.mock';
 import { RUTAS_PLANES } from './rutas/planes.mock';
 
@@ -26,6 +28,8 @@ const RUTAS: RutaMock[] = [
   ...RUTAS_CONTRATACIONES,
   ...RUTAS_FACTURAS,
   ...RUTAS_NOTIFICACIONES,
+  ...RUTAS_CLIENTES,
+  ...RUTAS_INSTALACIONES,
 ];
 
 /** Modo mock: responde los pedidos a /api con datos en memoria, sin llamar al backend. */

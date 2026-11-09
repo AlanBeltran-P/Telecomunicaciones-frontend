@@ -1,0 +1,67 @@
+<section class="vista">
+  <header class="encabezado">
+    <h1><span class="texto-degradado">Clientes</span></h1>
+    <label class="buscador">
+      <app-icono nombre="buscar" />
+      <input
+        class="campo__control"
+        name="busqueda"
+        placeholder="Buscar por nombre, email o DNI"
+        aria-label="Buscar clientes"
+        [value]="busqueda()"
+        (input)="buscar($event)"
+      />
+    </label>
+  </header>
+
+  @if (lista.error()) {
+    <div class="alerta" role="alert">
+      ⚠ No pudimos cargar los clientes. Probá de nuevo en unos minutos.
+    </div>
+  } @else if (lista.isLoading() && lista.value().length === 0) {
+    <div class="tarjeta esqueleto clientes__esqueleto"></div>
+  } @else if (lista.value().length === 0) {
+    <article class="tarjeta estado-vacio">
+      <span class="estado-vacio__icono"><app-icono nombre="personas" /></span>
+      <h2 class="tarjeta__titulo">No encontramos clientes</h2>
+      <p class="texto-suave">Probá con otra parte del nombre, el email o el DNI.</p>
+    </article>
+  } @else {
+    <div class="tarjeta tabla-envoltura clientes__tabla">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>DNI</th>
+            <th>Teléfono</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (cliente of lista.value(); track cliente.id) {
+            <tr>
+              <td>{{ cliente.nombre }}</td>
+              <td>{{ cliente.email }}</td>
+              <td>{{ cliente.dni }}</td>
+              <td>{{ cliente.telefono }}</td>
+              <td>
+                @if (cliente.activo) {
+                  <span class="insignia insignia--activa">Activo</span>
+                } @else {
+                  <span class="insignia insignia--inactivo">Inactivo</span>
+                }
+              </td>
+              <td>
+                <a class="boton boton--chico" [routerLink]="['/empleado/clientes', cliente.id]">
+                  Ver ficha
+                </a>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

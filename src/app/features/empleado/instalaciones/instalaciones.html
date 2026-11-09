@@ -1,0 +1,77 @@
+<section class="vista">
+  <header class="encabezado">
+    <div>
+      <h1>Instalaciones <span class="texto-degradado">pendientes</span></h1>
+      <p class="texto-suave">Asigná un técnico a cada contratación nueva.</p>
+    </div>
+  </header>
+
+  @if (datos.error()) {
+    <div class="alerta" role="alert">
+      ⚠ No pudimos cargar las instalaciones. Probá de nuevo en unos minutos.
+    </div>
+  } @else if (datos.value(); as datos) {
+    @if (datos.pendientes.length === 0) {
+      <article class="tarjeta estado-vacio">
+        <span class="estado-vacio__icono"><app-icono nombre="herramienta" /></span>
+        <h2 class="tarjeta__titulo">No hay instalaciones pendientes</h2>
+        <p class="texto-suave">Cuando alguien contrate un plan, aparece acá para asignarle un técnico.</p>
+      </article>
+    } @else {
+      <div class="grilla escalonado">
+        @for (instalacion of datos.pendientes; track instalacion.contratacionId) {
+          <article class="tarjeta tarjeta--interactiva instalacion" [style.--i]="$index">
+            <div class="seccion__titulo">
+              <h3 class="tarjeta__titulo instalaciones__plan">{{ instalacion.planNombre }}</h3>
+              @if (instalacion.tecnicoId) {
+                <span class="insignia insignia--activa">Técnico asignado</span>
+              } @else {
+                <span class="insignia insignia--pendiente">Sin técnico</span>
+              }
+            </div>
+            <p class="texto-suave">
+              {{ nombreDelCliente(datos.clientes, instalacion.clienteId) }} ·
+              {{ instalacion.direccion }}
+            </p>
+            <p class="campo__ayuda">
+              Contratado el {{ instalacion.fechaContratacion | date: 'dd/MM/yyyy' }}
+              @if (instalacion.tecnicoNombre) {
+                · {{ instalacion.tecnicoNombre }}
+              }
+            </p>
+            <div class="instalacion__asignar">
+              <select
+                #selector
+                class="campo__control"
+                [attr.aria-label]="'Técnico para ' + instalacion.planNombre"
+              >
+                @if (!instalacion.tecnicoId) {
+                  <option value="" selected disabled>Elegí un técnico</option>
+                }
+                @for (tecnico of datos.tecnicos; track tecnico.id) {
+                  <option [value]="tecnico.id" [selected]="tecnico.id === instalacion.tecnicoId">
+                    {{ tecnico.nombre }}
+                  </option>
+                }
+              </select>
+              <button
+                type="button"
+                class="boton boton--primario"
+                [disabled]="guardando() === instalacion.contratacionId"
+                (click)="asignar(instalacion, selector)"
+              >
+                {{ instalacion.tecnicoId ? 'Cambiar' : 'Asignar' }}
+              </button>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  } @else {
+    <div class="grilla">
+      <div class="tarjeta esqueleto instalaciones__esqueleto"></div>
+      <div class="tarjeta esqueleto instalaciones__esqueleto"></div>
+      <div class="tarjeta esqueleto instalaciones__esqueleto"></div>
+    </div>
+  }
+</section>

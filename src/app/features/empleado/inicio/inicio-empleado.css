@@ -1,0 +1,18 @@
+/* "lunes 9 de noviembre" → "Lunes 9 de noviembre" */
+.inicio__fecha::first-letter {
+  text-transform: uppercase;
+}
+
+.inicio-empleado__lista {
+  display: grid;
+  align-content: start;
+}
+
+.inicio-empleado__ir {
+  justify-self: start;
+  margin-top: var(--espacio-4);
+}
+
+.inicio-empleado__esqueleto {
+  height: 120px;
+}

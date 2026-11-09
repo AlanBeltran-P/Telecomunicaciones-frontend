@@ -19,6 +19,10 @@ const TRAZOS = {
   tarjeta: 'M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zM2 10h20',
   calendario:
     'M6 4h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3zM16 2v4M8 2v4M3 10h18',
+  ubicacion:
+    'M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12zM9.5 9a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0',
+  hecho: 'm5 12 5 5 9-10',
+  buscar: 'M4 11a7 7 0 1 0 14 0a7 7 0 1 0-14 0M21 21l-4.3-4.3',
 };
 
 export type NombreIcono = keyof typeof TRAZOS;
