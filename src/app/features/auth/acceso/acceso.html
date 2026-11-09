@@ -1,0 +1,194 @@
+<main class="acceso">
+  <section class="acceso__visual">
+    <a class="logo" routerLink="/">
+      <span class="logo__marca">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#04121a" stroke-width="2.4" stroke-linecap="round">
+          <path d="M5 12a7 7 0 0 1 14 0M8.5 12a3.5 3.5 0 0 1 7 0" />
+          <circle cx="12" cy="12" r="1.2" fill="#04121a" />
+        </svg>
+      </span>
+      Systema Tele
+    </a>
+    <div class="ondas" aria-hidden="true">
+      <span style="--n: 0"></span>
+      <span style="--n: 1"></span>
+      <span style="--n: 2"></span>
+    </div>
+    <h2>
+      Tu conexión, tus facturas y tus avisos <span class="texto-degradado">en un solo lugar.</span>
+    </h2>
+  </section>
+
+  <section class="acceso__formulario">
+    <div class="tarjeta acceso__caja escalonado">
+      <div class="pestanas" role="tablist">
+        <span
+          class="pestanas__indicador"
+          style="--cantidad: 2"
+          [style.--posicion]="pestanaActiva() === 'ingresar' ? 0 : 1"
+        ></span>
+        <button
+          type="button"
+          class="pestanas__boton"
+          role="tab"
+          [attr.aria-selected]="pestanaActiva() === 'ingresar'"
+          (click)="elegirPestana('ingresar')"
+        >
+          Ingresar
+        </button>
+        <button
+          type="button"
+          class="pestanas__boton"
+          role="tab"
+          [attr.aria-selected]="pestanaActiva() === 'registro'"
+          (click)="elegirPestana('registro')"
+        >
+          Crear cuenta
+        </button>
+      </div>
+
+      @if (error()) {
+        <div class="alerta" role="alert">⚠ {{ error() }}</div>
+      }
+
+      @if (pestanaActiva() === 'ingresar') {
+        <form class="formulario panel-pestana" [formGroup]="ingreso" (ngSubmit)="ingresar()">
+          <div>
+            <h1 class="acceso__titulo">Hola de nuevo</h1>
+            <p class="texto-suave">Ingresá con tu email y contraseña.</p>
+          </div>
+          <label class="campo">
+            <span class="campo__etiqueta">Email</span>
+            <input
+              class="campo__control"
+              type="email"
+              name="email"
+              formControlName="email"
+              placeholder="vos@email.com"
+              autocomplete="email"
+            />
+          </label>
+          <label class="campo">
+            <span class="campo__etiqueta">Contraseña</span>
+            <input
+              class="campo__control"
+              type="password"
+              name="contrasena"
+              formControlName="contrasena"
+              placeholder="••••••••"
+              autocomplete="current-password"
+            />
+          </label>
+          <button
+            class="boton boton--primario boton--grande"
+            type="submit"
+            [disabled]="ingreso.invalid || enviando()"
+          >
+            {{ enviando() ? 'Ingresando…' : 'Ingresar' }}
+          </button>
+        </form>
+      } @else {
+        <form class="formulario panel-pestana" [formGroup]="registro" (ngSubmit)="crearCuenta()">
+          <div>
+            <h1 class="acceso__titulo">Creá tu cuenta</h1>
+            <p class="texto-suave">Después elegís tu plan y coordinamos la instalación.</p>
+          </div>
+          <label class="campo" [class.campo--error]="campoInvalido('nombre')">
+            <span class="campo__etiqueta">Nombre y apellido</span>
+            <input
+              class="campo__control"
+              name="nombre"
+              formControlName="nombre"
+              placeholder="Ana Pérez"
+              autocomplete="name"
+            />
+            @if (campoInvalido('nombre')) {
+              <span class="campo__ayuda">Escribí tu nombre y apellido.</span>
+            }
+          </label>
+          <label class="campo" [class.campo--error]="campoInvalido('email')">
+            <span class="campo__etiqueta">Email</span>
+            <input
+              class="campo__control"
+              type="email"
+              name="email"
+              formControlName="email"
+              placeholder="vos@email.com"
+              autocomplete="email"
+            />
+            @if (campoInvalido('email')) {
+              <span class="campo__ayuda">Escribí un email válido.</span>
+            }
+          </label>
+          <label class="campo" [class.campo--error]="campoInvalido('contrasena')">
+            <span class="campo__etiqueta">Contraseña</span>
+            <input
+              class="campo__control"
+              type="password"
+              name="contrasena"
+              formControlName="contrasena"
+              placeholder="Mínimo 8 caracteres"
+              autocomplete="new-password"
+            />
+            @if (campoInvalido('contrasena')) {
+              <span class="campo__ayuda">Tiene que tener al menos 8 caracteres.</span>
+            }
+          </label>
+          <div class="fila-doble">
+            <label class="campo" [class.campo--error]="campoInvalido('dni')">
+              <span class="campo__etiqueta">DNI</span>
+              <input
+                class="campo__control"
+                name="dni"
+                formControlName="dni"
+                inputmode="numeric"
+                placeholder="35123456"
+              />
+              @if (campoInvalido('dni')) {
+                <span class="campo__ayuda">Tiene que tener 7 u 8 números.</span>
+              }
+            </label>
+            <label class="campo" [class.campo--error]="campoInvalido('telefono')">
+              <span class="campo__etiqueta">Teléfono</span>
+              <input
+                class="campo__control"
+                name="telefono"
+                formControlName="telefono"
+                placeholder="+54 11 5555-5555"
+                autocomplete="tel"
+              />
+              @if (campoInvalido('telefono')) {
+                <span class="campo__ayuda">Escribí un teléfono válido.</span>
+              }
+            </label>
+          </div>
+          <button
+            class="boton boton--primario boton--grande"
+            type="submit"
+            [disabled]="registro.invalid || enviando()"
+          >
+            {{ enviando() ? 'Creando tu cuenta…' : 'Crear cuenta' }}
+          </button>
+        </form>
+      }
+
+      @if (modoDemo) {
+        <div class="demo-roles">
+          <span class="campo__ayuda">Modo demo — entrar como:</span>
+          <div class="demo-roles__botones">
+            @for (cuenta of cuentasDemo; track cuenta.email) {
+              <button
+                type="button"
+                class="boton boton--chico"
+                [disabled]="enviando()"
+                (click)="entrarComo(cuenta.email)"
+              >
+                {{ cuenta.rol }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+</main>

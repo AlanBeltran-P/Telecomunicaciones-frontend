@@ -7,6 +7,7 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { Observable, firstValueFrom } from 'rxjs';
 import { Perfil } from '../auth/auth.model';
+import { Plan } from '../planes/plan.model';
 import { mockInterceptor } from './mock.interceptor';
 
 const ANA = { email: 'cliente@systematele.com', contrasena: 'demo1234' };
@@ -68,6 +69,18 @@ describe('mockInterceptor', () => {
     await firstValueFrom(http.post('/api/auth/logout', null));
     const error = await errorDe(http.get('/api/usuarios/yo'));
     expect(error.status).toBe(401);
+  });
+
+  it('lista solo los planes activos', async () => {
+    const planes = await firstValueFrom(http.get<Plan[]>('/api/planes'));
+    expect(planes.length).toBe(5);
+    expect(planes.map((plan) => plan.nombre)).not.toContain('Fibra 100');
+  });
+
+  it('un plan dado de baja da 404 con el mensaje del backend', async () => {
+    const error = await errorDe(http.get('/api/planes/6'));
+    expect(error.status).toBe(404);
+    expect(error.error.detail).toBe('No existe un plan activo con id 6');
   });
 
   it('avisa cuando una ruta no está simulada', async () => {

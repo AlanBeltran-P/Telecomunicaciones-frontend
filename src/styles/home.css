@@ -1,0 +1,905 @@
+/* Home pública: secciones e ilustraciones animadas */
+
+/* ---------- Navegación ---------- */
+.navegacion {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(16px);
+  background: rgba(5, 7, 15, 0.6);
+  border-bottom: 1px solid var(--borde);
+}
+
+.navegacion__fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-4);
+  padding-block: var(--espacio-4);
+}
+
+.navegacion__enlaces {
+  display: flex;
+  gap: var(--espacio-5);
+  font-size: var(--texto-sm);
+  color: var(--texto-suave);
+}
+
+.navegacion__enlaces a {
+  position: relative;
+  transition: color var(--rapido);
+}
+
+/* Subrayado de luz que crece al pasar el mouse */
+.navegacion__enlaces a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--degradado);
+  transform: scaleX(0);
+  transition: transform var(--normal) var(--curva);
+}
+
+.navegacion__enlaces a:hover {
+  color: var(--texto);
+}
+
+.navegacion__enlaces a:hover::after {
+  transform: scaleX(1);
+}
+
+.navegacion__acciones {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+}
+
+/* ---------- Secciones ---------- */
+.seccion-home {
+  padding-block: var(--espacio-8);
+  scroll-margin-top: 70px;
+}
+
+.seccion-home__titulo {
+  display: grid;
+  gap: var(--espacio-3);
+  max-width: 640px;
+  margin: 0 auto var(--espacio-7);
+  text-align: center;
+}
+
+.seccion-home__titulo h2 {
+  font-size: var(--texto-2xl);
+}
+
+.seccion-home__titulo p {
+  color: var(--texto-suave);
+  font-size: var(--texto-lg);
+}
+
+.antetitulo {
+  justify-self: center;
+  font-size: var(--texto-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cian);
+}
+
+/* ---------- Héroe ---------- */
+.heroe {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: var(--espacio-7);
+  padding-block: var(--espacio-7) var(--espacio-8);
+}
+
+.heroe__etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  padding: 6px 14px;
+  border-radius: var(--radio-total);
+  border: 1px solid var(--borde-fuerte);
+  background: var(--superficie);
+  font-size: var(--texto-xs);
+  color: var(--texto-suave);
+}
+
+.heroe__etiqueta::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--exito);
+  animation: pulso 2s infinite;
+}
+
+.heroe h1 {
+  font-size: var(--texto-3xl);
+  margin-block: var(--espacio-5);
+}
+
+.heroe__texto {
+  font-size: var(--texto-lg);
+  color: var(--texto-suave);
+  max-width: 520px;
+}
+
+.heroe__botones {
+  display: flex;
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-6);
+  flex-wrap: wrap;
+}
+
+.heroe__datos {
+  display: flex;
+  gap: var(--espacio-6);
+  margin-top: var(--espacio-7);
+  flex-wrap: wrap;
+}
+
+.heroe__dato strong {
+  display: block;
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-xl);
+}
+
+.heroe__dato span {
+  font-size: var(--texto-sm);
+  color: var(--texto-tenue);
+}
+
+/* Ilustración: red de fibra con pulsos de luz */
+.red-fibra {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  justify-self: center;
+}
+
+.red-fibra svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.fibra {
+  fill: none;
+  stroke: rgba(148, 163, 184, 0.18);
+  stroke-width: 2;
+}
+
+/* Un tramo corto de luz que recorre cada fibra */
+.fibra-pulso {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 40 520;
+  animation: viajar 3.2s linear infinite;
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+.fibra-pulso--cian {
+  stroke: var(--cian);
+  color: var(--cian);
+}
+
+.fibra-pulso--violeta {
+  stroke: var(--violeta);
+  color: var(--violeta);
+}
+
+@keyframes viajar {
+  from {
+    stroke-dashoffset: 560;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.anillo-giratorio {
+  fill: none;
+  stroke: rgba(148, 163, 184, 0.16);
+  stroke-dasharray: 4 10;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rotar 40s linear infinite;
+}
+
+.anillo-giratorio--inverso {
+  animation-direction: reverse;
+  animation-duration: 28s;
+}
+
+@keyframes rotar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.nucleo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: latir 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(34, 211, 238, 0.55));
+}
+
+@keyframes latir {
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+.dispositivo {
+  animation: flotar-suave 5s ease-in-out infinite;
+  animation-delay: var(--retraso, 0s);
+}
+
+.dispositivo rect {
+  fill: var(--fondo-elevado);
+  stroke: var(--borde-fuerte);
+}
+
+.dispositivo path,
+.dispositivo .icono {
+  fill: none;
+  stroke: var(--texto);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@keyframes flotar-suave {
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Etiquetas que flotan sobre la ilustración */
+.chip {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-total);
+  background: rgba(10, 15, 30, 0.85);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--sombra);
+  font-size: var(--texto-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  animation: flotar-suave 6s ease-in-out infinite;
+  animation-delay: var(--retraso, 0s);
+}
+
+.chip::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color, var(--cian));
+  box-shadow: 0 0 10px var(--color, var(--cian));
+}
+
+/* ---------- Servicios ---------- */
+.servicios {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--espacio-5);
+}
+
+.servicio {
+  display: grid;
+  gap: var(--espacio-3);
+  padding: var(--espacio-6);
+}
+
+.servicio__ilustracion {
+  height: 170px;
+  margin-bottom: var(--espacio-3);
+  border-radius: var(--radio-md);
+  background:
+    radial-gradient(circle at 50% 120%, rgba(34, 211, 238, 0.14), transparent 60%),
+    rgba(5, 7, 15, 0.5);
+  border: 1px solid var(--borde);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.servicio__ilustracion svg {
+  height: 140px;
+  width: auto;
+  overflow: visible;
+}
+
+.servicio h3 {
+  font-size: var(--texto-xl);
+}
+
+.servicio__lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+  padding: 0;
+  list-style: none;
+}
+
+.servicio__lista li {
+  padding: 4px 12px;
+  border-radius: var(--radio-total);
+  background: var(--superficie-hover);
+  font-size: var(--texto-xs);
+  color: var(--texto-suave);
+}
+
+.servicio__enlace {
+  justify-self: start;
+  margin-top: var(--espacio-2);
+  font-size: var(--texto-sm);
+  font-weight: 600;
+  color: var(--cian);
+  transition: transform var(--rapido);
+}
+
+.servicio__enlace:hover {
+  transform: translateX(4px);
+}
+
+/* Trazos de las ilustraciones */
+.trazo {
+  fill: none;
+  stroke: var(--texto);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trazo--suave {
+  stroke: var(--borde-fuerte);
+}
+
+.relleno-oscuro {
+  fill: var(--fondo-elevado);
+}
+
+/* Internet: ondas de wifi que se encienden en secuencia */
+.onda {
+  fill: none;
+  stroke: var(--cian);
+  stroke-width: 3;
+  stroke-linecap: round;
+  opacity: 0.15;
+  animation: encender 2.4s ease-in-out infinite;
+  animation-delay: var(--retraso, 0s);
+}
+
+@keyframes encender {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+.led {
+  fill: var(--exito);
+  animation: parpadear 1.4s steps(2) infinite;
+  animation-delay: var(--retraso, 0s);
+}
+
+@keyframes parpadear {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* TV: imagen que se desplaza dentro de la pantalla */
+.pantalla-contenido {
+  animation: desplazar-imagen 6s linear infinite;
+}
+
+@keyframes desplazar-imagen {
+  to {
+    transform: translateX(-120px);
+  }
+}
+
+.boton-play {
+  fill: #ffffff;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: latir 2s ease-in-out infinite;
+}
+
+/* Móvil: barras de señal que suben una tras otra */
+.barra-senal {
+  fill: var(--cian);
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: subir-senal 2.4s var(--curva) infinite;
+  animation-delay: var(--retraso, 0s);
+}
+
+@keyframes subir-senal {
+  0% {
+    transform: scaleY(0.15);
+    opacity: 0.3;
+  }
+  35%,
+  80% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(0.15);
+    opacity: 0.3;
+  }
+}
+
+.burbuja {
+  animation: flotar-suave 3s ease-in-out infinite;
+}
+
+/* Empresas: ventanas que se prenden y nodos conectados */
+.ventana {
+  fill: var(--violeta);
+  opacity: 0.15;
+  animation: encender 3s ease-in-out infinite;
+  animation-delay: var(--retraso, 0s);
+}
+
+.enlace-red {
+  fill: none;
+  stroke: var(--borde-fuerte);
+  stroke-width: 2;
+  stroke-dasharray: 4 6;
+  animation: correr-guiones 1.6s linear infinite;
+}
+
+@keyframes correr-guiones {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.nodo {
+  fill: var(--cian);
+  animation: pulso-nodo 2s ease-in-out infinite;
+  animation-delay: var(--retraso, 0s);
+}
+
+@keyframes pulso-nodo {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* ---------- Cómo funciona ---------- */
+.pasos-home {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--espacio-5);
+}
+
+/* Línea que une los pasos y se llena de luz cuando la sección aparece */
+.pasos-home::before,
+.pasos-home::after {
+  content: "";
+  position: absolute;
+  top: 27px;
+  left: 12%;
+  right: 12%;
+  height: 2px;
+  background: var(--borde);
+}
+
+.pasos-home::after {
+  background: var(--degradado);
+  box-shadow: var(--brillo-cian);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.6s var(--curva) 0.3s;
+}
+
+.pasos-home.revelado::after {
+  transform: scaleX(1);
+}
+
+.paso-home {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: var(--espacio-3);
+  text-align: center;
+}
+
+.paso-home__numero {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--fondo-elevado);
+  border: 1px solid var(--borde-fuerte);
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-lg);
+  font-weight: 700;
+  transition: background var(--normal), color var(--normal), box-shadow var(--normal);
+  transition-delay: var(--retraso, 0ms);
+}
+
+.pasos-home.revelado .paso-home__numero {
+  background: var(--degradado);
+  color: #04121a;
+  box-shadow: var(--brillo-cian);
+}
+
+.paso-home h3 {
+  font-size: var(--texto-lg);
+}
+
+.paso-home p {
+  font-size: var(--texto-sm);
+  color: var(--texto-suave);
+  max-width: 240px;
+}
+
+/* ---------- Cobertura ---------- */
+.cobertura {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: var(--espacio-7);
+}
+
+.cobertura h2 {
+  font-size: var(--texto-2xl);
+  margin-block: var(--espacio-3);
+}
+
+.ciudades {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+  margin-block: var(--espacio-5);
+  padding: 0;
+  list-style: none;
+}
+
+.ciudades li {
+  padding: 6px 14px;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-total);
+  font-size: var(--texto-sm);
+}
+
+.consulta {
+  display: flex;
+  gap: var(--espacio-2);
+  max-width: 460px;
+}
+
+.mapa-red svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.mapa-red .tramo {
+  fill: none;
+  stroke: rgba(148, 163, 184, 0.2);
+  stroke-width: 1.5;
+}
+
+.mapa-red .tramo-pulso {
+  fill: none;
+  stroke: var(--cian);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 14 300;
+  animation: viajar 2.8s linear infinite;
+  animation-delay: var(--retraso, 0s);
+}
+
+.ciudad__punto {
+  fill: var(--cian);
+}
+
+.ciudad__radar {
+  fill: none;
+  stroke: var(--cian);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: radar-ciudad 2.6s var(--curva) infinite;
+  animation-delay: var(--retraso, 0s);
+}
+
+@keyframes radar-ciudad {
+  from {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+.ciudad__nombre {
+  fill: var(--texto-suave);
+  font-family: var(--fuente-texto);
+  font-size: 12px;
+}
+
+.ciudad--principal .ciudad__punto {
+  fill: var(--violeta);
+}
+
+.ciudad--principal .ciudad__radar {
+  stroke: var(--violeta);
+}
+
+/* ---------- Números ---------- */
+.numeros {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--espacio-4);
+}
+
+.numero-home {
+  text-align: center;
+  padding: var(--espacio-6) var(--espacio-4);
+}
+
+.numero-home__valor {
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-2xl);
+  font-weight: 700;
+}
+
+.numero-home__etiqueta {
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+}
+
+/* ---------- Planes ---------- */
+.planes__grilla {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--espacio-5);
+  align-items: stretch;
+}
+
+.plan {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-4);
+  padding: var(--espacio-6);
+}
+
+.plan__cinta {
+  align-self: flex-start;
+  padding: 4px 12px;
+  border-radius: var(--radio-total);
+  background: var(--degradado);
+  color: #04121a;
+  font-size: var(--texto-xs);
+  font-weight: 700;
+}
+
+.plan__nombre {
+  font-size: var(--texto-xl);
+}
+
+.plan__precio {
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-2xl);
+  font-weight: 700;
+}
+
+.plan__precio small {
+  font-size: var(--texto-sm);
+  color: var(--texto-suave);
+  font-weight: 500;
+}
+
+.plan .boton {
+  margin-top: auto;
+}
+
+.plan-esqueleto {
+  display: grid;
+  gap: var(--espacio-4);
+  padding: var(--espacio-6);
+}
+
+/* ---------- Preguntas frecuentes ---------- */
+.preguntas {
+  display: grid;
+  gap: var(--espacio-3);
+  max-width: 800px;
+  margin-inline: auto;
+}
+
+.pregunta {
+  padding: 0;
+}
+
+.pregunta summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--espacio-4);
+  padding: var(--espacio-5);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.pregunta summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Un "+" que gira y se vuelve "×" al abrir */
+.pregunta summary::after {
+  content: "+";
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--superficie-hover);
+  color: var(--cian);
+  font-size: 1.2rem;
+  transition: transform var(--normal) var(--curva);
+}
+
+.pregunta[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.pregunta__respuesta {
+  padding: 0 var(--espacio-5) var(--espacio-5);
+  color: var(--texto-suave);
+}
+
+.pregunta[open] .pregunta__respuesta {
+  animation: aparecer var(--normal) var(--curva);
+}
+
+/* ---------- Cierre ---------- */
+.cierre {
+  display: grid;
+  justify-items: center;
+  gap: var(--espacio-4);
+  padding: var(--espacio-8) var(--espacio-5);
+  text-align: center;
+}
+
+.cierre h2 {
+  font-size: var(--texto-2xl);
+}
+
+.cierre p {
+  max-width: 520px;
+  color: var(--texto-suave);
+}
+
+.cierre__botones {
+  margin-top: 8px;
+  justify-content: center;
+}
+
+.pie__lema {
+  margin-top: 12px;
+  font-size: var(--texto-sm);
+}
+
+/* ---------- Pie ---------- */
+.pie {
+  border-top: 1px solid var(--borde);
+  padding-block: var(--espacio-7) var(--espacio-5);
+}
+
+.pie__columnas {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, 1fr);
+  gap: var(--espacio-5);
+}
+
+.pie__columnas h4 {
+  margin-bottom: var(--espacio-3);
+  font-size: var(--texto-sm);
+}
+
+.pie__columnas ul {
+  display: grid;
+  gap: var(--espacio-2);
+  padding: 0;
+  list-style: none;
+  font-size: var(--texto-sm);
+  color: var(--texto-suave);
+}
+
+.pie__columnas a:hover {
+  color: var(--texto);
+}
+
+.pie__legal {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-7);
+  padding-top: var(--espacio-5);
+  border-top: 1px solid var(--borde);
+  font-size: var(--texto-xs);
+  color: var(--texto-tenue);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .navegacion__enlaces,
+  .navegacion__acciones .idioma,
+  .navegacion__acciones .boton:not(.boton--primario) {
+    display: none;
+  }
+
+  .heroe,
+  .cobertura,
+  .servicios,
+  .planes__grilla {
+    grid-template-columns: 1fr;
+  }
+
+  .heroe {
+    padding-block: var(--espacio-5) var(--espacio-7);
+  }
+
+  .pasos-home,
+  .numeros {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pasos-home::before,
+  .pasos-home::after {
+    display: none;
+  }
+
+  /* Que las etiquetas flotantes no se salgan de la pantalla */
+  .red-fibra .chip {
+    right: auto !important;
+    max-width: 46%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .red-fibra .chip:nth-of-type(2) {
+    top: 27% !important;
+    left: 54%;
+  }
+
+  .pie__columnas {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .seccion-home {
+    padding-block: var(--espacio-7);
+  }
+}

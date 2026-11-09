@@ -11,12 +11,13 @@ import { MockDb } from './mock-db';
 import { ErrorMock } from './respuestas';
 import { RutaMock } from './ruta-mock';
 import { RUTAS_AUTH } from './rutas/auth.mock';
+import { RUTAS_PLANES } from './rutas/planes.mock';
 
 /** Demora para que se vean los estados de carga, como con un backend real. */
 const DEMORA_MS = 300;
 
 // Cada etapa suma acá sus rutas (planes, facturas, contrataciones, reportes...)
-const RUTAS: RutaMock[] = [...RUTAS_AUTH];
+const RUTAS: RutaMock[] = [...RUTAS_AUTH, ...RUTAS_PLANES];
 
 /** Modo mock: responde los pedidos a /api con datos en memoria, sin llamar al backend. */
 export const mockInterceptor: HttpInterceptorFn = (req, next) => {

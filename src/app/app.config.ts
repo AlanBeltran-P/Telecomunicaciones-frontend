@@ -8,7 +8,7 @@ import {
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 import { AuthService } from './core/auth/auth.service';
@@ -26,7 +26,11 @@ const interceptores: HttpInterceptorFn[] = environment.usarMock
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes, withComponentInputBinding()),
+    provideRouter(
+      routes,
+      withComponentInputBinding(),
+      withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }),
+    ),
     provideHttpClient(withInterceptors(interceptores)),
     // Antes de mostrar la primera pantalla, averigua si hay sesión
     provideAppInitializer(() => inject(AuthService).cargarSesion()),
