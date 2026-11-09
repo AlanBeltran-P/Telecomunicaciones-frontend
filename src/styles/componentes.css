@@ -1,0 +1,1212 @@
+/* Componentes de la interfaz */
+
+/* ---------- Logo ---------- */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: var(--texto-lg);
+}
+
+.logo__marca {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--degradado);
+  box-shadow: var(--brillo-cian);
+  display: grid;
+  place-items: center;
+}
+
+.logo__marca svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ---------- Botones ---------- */
+.boton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-2);
+  padding: 10px 18px;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-total);
+  background: var(--superficie);
+  font-size: var(--texto-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform var(--rapido) var(--curva),
+    box-shadow var(--normal) var(--curva),
+    background var(--normal);
+}
+
+.boton:hover {
+  transform: translateY(-2px);
+  background: var(--superficie-hover);
+}
+
+.boton:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.boton--primario {
+  border: none;
+  background: var(--degradado);
+  color: #04121a;
+  box-shadow: var(--brillo-cian);
+  overflow: hidden;
+}
+
+/* Reflejo que cruza el botón al pasar el mouse */
+.boton--primario::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.55) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform var(--lento) var(--curva);
+}
+
+.boton--primario:hover {
+  background: var(--degradado);
+  box-shadow: var(--brillo-cian), var(--brillo-violeta);
+}
+
+.boton--primario:hover::after {
+  transform: translateX(120%);
+}
+
+.boton--fantasma {
+  border-color: transparent;
+  background: transparent;
+}
+
+.boton--peligro {
+  border-color: rgba(248, 113, 113, 0.35);
+  color: var(--peligro);
+}
+
+.boton--grande {
+  padding: 14px 26px;
+  font-size: var(--texto-md);
+}
+
+.boton--chico {
+  padding: 6px 12px;
+  font-size: var(--texto-xs);
+}
+
+.boton[disabled] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ---------- Tarjeta de vidrio ---------- */
+.tarjeta {
+  position: relative;
+  padding: var(--espacio-5);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+  backdrop-filter: blur(14px);
+  box-shadow: var(--sombra);
+  transition:
+    transform var(--normal) var(--curva),
+    border-color var(--normal);
+  overflow: hidden;
+}
+
+/* Foco de luz que sigue al mouse (app.js actualiza --x y --y) */
+.tarjeta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(380px circle at var(--x, 50%) var(--y, 0%), rgba(34, 211, 238, 0.12), transparent 60%);
+  opacity: 0;
+  transition: opacity var(--normal);
+  pointer-events: none;
+}
+
+.tarjeta:hover::before {
+  opacity: 1;
+}
+
+.tarjeta--interactiva:hover {
+  transform: translateY(-4px);
+  border-color: var(--borde-fuerte);
+}
+
+.tarjeta__titulo {
+  font-size: var(--texto-lg);
+  margin-bottom: var(--espacio-2);
+}
+
+/* Borde con degradado que gira, para lo destacado */
+.borde-giratorio {
+  border-color: transparent;
+  background:
+    linear-gradient(var(--fondo-elevado), var(--fondo-elevado)) padding-box,
+    conic-gradient(from var(--angulo), var(--cian), var(--violeta), transparent 40%, var(--cian)) border-box;
+  animation: girar 5s linear infinite;
+}
+
+/* Si además entra escalonada, conserva las dos animaciones */
+.escalonado > .borde-giratorio {
+  animation:
+    aparecer var(--lento) var(--curva) both,
+    girar 5s linear infinite;
+  animation-delay: calc(var(--i, 0) * 70ms), 0s;
+}
+
+/* ---------- Insignias de estado ---------- */
+.insignia {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radio-total);
+  font-size: var(--texto-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border: 1px solid currentColor;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  white-space: nowrap;
+}
+
+.insignia::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.insignia--activa,
+.insignia--pagada {
+  color: var(--exito);
+}
+
+.insignia--pendiente,
+.insignia--instalacion {
+  color: var(--alerta);
+}
+
+.insignia--vencida,
+.insignia--suspendida {
+  color: var(--peligro);
+}
+
+.insignia--baja,
+.insignia--inactivo {
+  color: var(--texto-tenue);
+}
+
+.insignia--rol {
+  color: var(--violeta);
+}
+
+/* Se aplica cuando cambia el estado para que se note */
+.insignia--recien-cambiada {
+  animation: rebote-estado 520ms var(--curva);
+}
+
+/* ---------- Campos de formulario ---------- */
+.campo {
+  display: grid;
+  gap: 6px;
+}
+
+.campo__etiqueta {
+  font-size: var(--texto-sm);
+  color: var(--texto-suave);
+  font-weight: 500;
+}
+
+.campo__control {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-md);
+  background: rgba(5, 7, 15, 0.6);
+  outline: none;
+  transition:
+    border-color var(--rapido),
+    box-shadow var(--normal);
+}
+
+.campo__control::placeholder {
+  color: var(--texto-tenue);
+}
+
+.campo__control:focus {
+  border-color: var(--cian);
+  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.15), var(--brillo-cian);
+}
+
+.campo--error .campo__control {
+  border-color: var(--peligro);
+  box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.12);
+}
+
+.campo__ayuda {
+  font-size: var(--texto-xs);
+  color: var(--texto-tenue);
+}
+
+.campo--error .campo__ayuda {
+  color: var(--peligro);
+}
+
+select.campo__control {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--texto-suave) 50%),
+    linear-gradient(135deg, var(--texto-suave) 50%, transparent 50%);
+  background-position: calc(100% - 20px) 50%, calc(100% - 15px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+
+/* ---------- Alerta (errores del backend) ---------- */
+.alerta {
+  display: flex;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3) var(--espacio-4);
+  border-radius: var(--radio-md);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  background: rgba(248, 113, 113, 0.08);
+  color: #fecaca;
+  font-size: var(--texto-sm);
+  animation: deslizar-arriba var(--normal) var(--curva);
+}
+
+/* ---------- Tabla ---------- */
+.tabla-envoltura {
+  overflow-x: auto;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--texto-sm);
+}
+
+.tabla th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--texto-tenue);
+  font-size: var(--texto-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: var(--espacio-3) var(--espacio-4);
+  border-bottom: 1px solid var(--borde);
+}
+
+.tabla td {
+  padding: var(--espacio-4);
+  border-bottom: 1px solid var(--borde);
+  vertical-align: middle;
+}
+
+.tabla tbody tr {
+  transition: background var(--rapido);
+}
+
+.tabla tbody tr:hover {
+  background: var(--superficie);
+}
+
+.tabla tr:last-child td {
+  border-bottom: none;
+}
+
+.monto {
+  font-family: var(--fuente-titulos);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Layout de la app (barra lateral + contenido) ---------- */
+.app {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+}
+
+.barra-lateral {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-6);
+  padding: var(--espacio-5);
+  border-right: 1px solid var(--borde);
+  background: rgba(5, 7, 15, 0.7);
+  backdrop-filter: blur(18px);
+}
+
+.menu {
+  display: grid;
+  gap: var(--espacio-1);
+}
+
+.menu__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  padding: 10px 14px;
+  border-radius: var(--radio-md);
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+  font-weight: 500;
+  transition:
+    background var(--rapido),
+    color var(--rapido);
+}
+
+.menu__item svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.menu__item:hover {
+  background: var(--superficie);
+  color: var(--texto);
+}
+
+.menu__item--activo {
+  background: var(--degradado-suave);
+  color: var(--texto);
+}
+
+/* Barrita de luz a la izquierda del ítem activo */
+.menu__item--activo::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--degradado);
+  box-shadow: var(--brillo-cian);
+}
+
+.perfil-zona {
+  position: relative;
+  margin-top: auto;
+}
+
+/* La tarjeta de perfil es un botón que abre el menú del avatar */
+.perfil {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3);
+  border-radius: var(--radio-md);
+  border: 1px solid var(--borde);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--rapido), border-color var(--rapido);
+}
+
+.perfil:hover {
+  background: var(--superficie);
+  border-color: var(--borde-fuerte);
+}
+
+.perfil__flecha {
+  width: 16px;
+  margin-left: auto;
+  color: var(--texto-tenue);
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--degradado);
+  color: #04121a;
+  font-weight: 700;
+  font-size: var(--texto-sm);
+  flex-shrink: 0;
+}
+
+.perfil__nombre {
+  font-size: var(--texto-sm);
+  font-weight: 600;
+}
+
+.perfil__rol {
+  font-size: var(--texto-xs);
+  color: var(--texto-tenue);
+}
+
+.contenido {
+  padding: var(--espacio-6) var(--espacio-7);
+  display: grid;
+  gap: var(--espacio-6);
+  align-content: start;
+}
+
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-4);
+  flex-wrap: wrap;
+}
+
+.encabezado h1 {
+  font-size: var(--texto-xl);
+}
+
+.encabezado__acciones {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+}
+
+.seccion {
+  display: grid;
+  gap: var(--espacio-4);
+  scroll-margin-top: var(--espacio-6);
+}
+
+.seccion__titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  font-size: var(--texto-lg);
+}
+
+.grilla {
+  display: grid;
+  gap: var(--espacio-4);
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+/* ---------- Indicadores (KPI) ---------- */
+.kpi__etiqueta {
+  font-size: var(--texto-sm);
+  color: var(--texto-suave);
+}
+
+.kpi__valor {
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-2xl);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi__icono {
+  position: absolute;
+  top: var(--espacio-5);
+  right: var(--espacio-5);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--degradado-suave);
+  color: var(--cian);
+}
+
+.kpi__icono svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ---------- Campana de notificaciones ---------- */
+.campana {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--borde-fuerte);
+  background: var(--superficie);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.campana svg {
+  width: 18px;
+  height: 18px;
+}
+
+.campana__contador {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radio-total);
+  background: var(--cian);
+  color: #04121a;
+  font-size: 11px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  animation: pulso 2s infinite;
+}
+
+/* ---------- Selector de idioma ---------- */
+.idioma {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: var(--radio-total);
+  border: 1px solid var(--borde);
+  font-size: var(--texto-xs);
+  font-weight: 600;
+}
+
+.idioma button {
+  padding: 4px 10px;
+  border: none;
+  border-radius: var(--radio-total);
+  background: transparent;
+  color: var(--texto-suave);
+  cursor: pointer;
+}
+
+.idioma button[aria-pressed="true"] {
+  background: var(--superficie-hover);
+  color: var(--texto);
+}
+
+/* ---------- Pestañas ---------- */
+.pestanas {
+  position: relative;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  padding: 4px;
+  border-radius: var(--radio-total);
+  border: 1px solid var(--borde);
+  background: rgba(5, 7, 15, 0.5);
+}
+
+.pestanas__boton {
+  position: relative;
+  z-index: 1;
+  padding: 8px 18px;
+  border: none;
+  background: none;
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--normal);
+}
+
+.pestanas__boton[aria-selected="true"] {
+  color: #04121a;
+}
+
+/* Pastilla que se desliza bajo la pestaña elegida (app.js mueve --posicion) */
+.pestanas__indicador {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / var(--cantidad, 2));
+  border-radius: var(--radio-total);
+  background: var(--degradado);
+  box-shadow: var(--brillo-cian);
+  transform: translateX(calc(var(--posicion, 0) * 100%));
+  transition: transform var(--normal) var(--curva);
+}
+
+.panel-pestana {
+  animation: aparecer var(--normal) var(--curva);
+}
+
+/* ---------- Modal ---------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: var(--espacio-4);
+  background: rgba(2, 4, 10, 0.7);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--normal);
+}
+
+.modal--abierto {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal__caja {
+  width: min(520px, 100%);
+  display: grid;
+  gap: var(--espacio-5);
+  transform: translateY(24px) scale(0.96);
+  transition: transform var(--normal) var(--curva);
+}
+
+.modal--abierto .modal__caja {
+  transform: none;
+}
+
+.modal__pie {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--espacio-3);
+}
+
+/* ---------- Medios de pago ---------- */
+.medios {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--espacio-3);
+}
+
+.medio {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  padding: var(--espacio-4);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-md);
+  cursor: pointer;
+  font-size: var(--texto-sm);
+  font-weight: 600;
+  transition:
+    border-color var(--rapido),
+    background var(--rapido),
+    box-shadow var(--normal);
+}
+
+.medio input {
+  position: absolute;
+  opacity: 0;
+}
+
+.medio__icono {
+  width: 34px;
+  height: 24px;
+  border-radius: 5px;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  font-weight: 800;
+  background: var(--superficie-hover);
+}
+
+.medio:has(input:checked) {
+  border-color: var(--cian);
+  background: var(--degradado-suave);
+  box-shadow: var(--brillo-cian);
+}
+
+/* ---------- Interruptor ---------- */
+.interruptor {
+  position: relative;
+  width: 52px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.interruptor input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.interruptor__pista {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radio-total);
+  background: var(--superficie-hover);
+  border: 1px solid var(--borde-fuerte);
+  transition: background var(--normal);
+}
+
+.interruptor__pista::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--texto);
+  transition: transform var(--normal) var(--curva);
+}
+
+.interruptor input:checked + .interruptor__pista {
+  background: var(--degradado);
+  box-shadow: var(--brillo-cian);
+}
+
+.interruptor input:checked + .interruptor__pista::after {
+  transform: translateX(22px);
+}
+
+/* ---------- Línea de tiempo de la instalación ---------- */
+.pasos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--espacio-2);
+  margin-top: var(--espacio-4);
+}
+
+.paso {
+  display: grid;
+  gap: 6px;
+  font-size: var(--texto-xs);
+  color: var(--texto-tenue);
+}
+
+.paso__barra {
+  height: 4px;
+  border-radius: 4px;
+  background: var(--superficie-hover);
+  overflow: hidden;
+}
+
+.paso--hecho {
+  color: var(--texto-suave);
+}
+
+.paso--hecho .paso__barra {
+  background: var(--degradado);
+}
+
+/* El paso en curso tiene una luz que lo recorre */
+.paso--actual .paso__barra {
+  background: linear-gradient(90deg, var(--superficie-hover) 0%, var(--cian) 50%, var(--superficie-hover) 100%);
+  background-size: 200% 100%;
+  animation: brillo-carga 1.6s linear infinite;
+}
+
+.paso--actual {
+  color: var(--cian);
+}
+
+/* ---------- Esqueleto de carga ---------- */
+.esqueleto {
+  border-radius: var(--radio-sm);
+  background: linear-gradient(90deg, var(--superficie) 0%, var(--superficie-hover) 50%, var(--superficie) 100%);
+  background-size: 200% 100%;
+  animation: brillo-carga 1.4s linear infinite;
+}
+
+/* ---------- Notificaciones ---------- */
+.notificacion {
+  display: flex;
+  gap: var(--espacio-4);
+  padding: var(--espacio-4);
+  border-radius: var(--radio-md);
+  cursor: pointer;
+  transition: background var(--rapido);
+}
+
+.notificacion:hover {
+  background: var(--superficie);
+}
+
+.notificacion__punto {
+  width: 10px;
+  height: 10px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--cian);
+  flex-shrink: 0;
+  animation: pulso 2s infinite;
+  transition: opacity var(--normal), transform var(--normal);
+}
+
+.notificacion--leida .notificacion__punto {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.notificacion--leida .notificacion__asunto {
+  color: var(--texto-suave);
+  font-weight: 500;
+}
+
+.notificacion__asunto {
+  font-weight: 600;
+  font-size: var(--texto-sm);
+}
+
+.notificacion__mensaje {
+  font-size: var(--texto-sm);
+  color: var(--texto-suave);
+}
+
+.notificacion__fecha {
+  font-size: var(--texto-xs);
+  color: var(--texto-tenue);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* ---------- Toast (aviso flotante) ---------- */
+.toasts {
+  position: fixed;
+  right: var(--espacio-5);
+  bottom: var(--espacio-5);
+  z-index: 60;
+  display: grid;
+  gap: var(--espacio-2);
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3) var(--espacio-4);
+  border-radius: var(--radio-md);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  background: rgba(10, 15, 30, 0.92);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--sombra);
+  font-size: var(--texto-sm);
+  animation: deslizar-arriba var(--normal) var(--curva);
+  transition: opacity var(--normal), transform var(--normal);
+}
+
+.toast::before {
+  content: "✓";
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--exito);
+  color: #04121a;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.toast--saliendo {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* ---------- Vistas (una sección por pantalla) ---------- */
+.barra-superior {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--espacio-3);
+}
+
+.vista {
+  display: grid;
+  gap: var(--espacio-6);
+  align-content: start;
+  animation: entrar-vista var(--normal) var(--curva);
+}
+
+@keyframes entrar-vista {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.volver {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  font-size: var(--texto-sm);
+  color: var(--texto-suave);
+  transition: color var(--rapido), transform var(--rapido);
+}
+
+.volver:hover {
+  color: var(--cian);
+  transform: translateX(-3px);
+}
+
+/* Número de pendientes al lado de un ítem del menú */
+.menu__contador {
+  margin-left: auto;
+  min-width: 20px;
+  padding: 1px 7px;
+  border-radius: var(--radio-total);
+  background: var(--degradado);
+  color: #04121a;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Fila de una lista corta (resúmenes de Inicio) */
+.fila-resumen {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3) 0;
+  border-bottom: 1px solid var(--borde);
+  font-size: var(--texto-sm);
+}
+
+.fila-resumen:last-child {
+  border-bottom: none;
+}
+
+/* ---------- Desplegables (panel de la campana y menú del avatar) ---------- */
+.zona-campana {
+  position: relative;
+}
+
+.desplegable {
+  position: absolute;
+  z-index: 40;
+  min-width: 220px;
+  padding: 6px;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-md);
+  background: rgba(10, 15, 30, 0.96);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--sombra), var(--brillo-violeta);
+  opacity: 0;
+  transform: translateY(-8px) scale(0.97);
+  transform-origin: top right;
+  pointer-events: none;
+  transition:
+    opacity var(--normal) var(--curva),
+    transform var(--normal) var(--curva);
+}
+
+/* El menú del avatar se abre hacia arriba */
+.desplegable--arriba {
+  bottom: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  transform: translateY(8px) scale(0.97);
+  transform-origin: bottom center;
+}
+
+.desplegable--abierto {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.desplegable__item {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: var(--radio-sm);
+  background: none;
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--rapido), color var(--rapido);
+}
+
+.desplegable__item svg {
+  width: 18px;
+  height: 18px;
+}
+
+.desplegable__item:hover {
+  background: var(--superficie-hover);
+  color: var(--texto);
+}
+
+.desplegable__item--peligro,
+.desplegable__item--peligro:hover {
+  color: var(--peligro);
+}
+
+.panel-notificaciones {
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(400px, calc(100vw - 32px));
+  padding: 0;
+}
+
+.panel-notificaciones__cabeza {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3) var(--espacio-4);
+  border-bottom: 1px solid var(--borde);
+}
+
+.panel-notificaciones__lista {
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 6px;
+}
+
+.panel-notificaciones__lista .notificacion {
+  padding: var(--espacio-3);
+  gap: var(--espacio-3);
+}
+
+.panel-notificaciones__pie {
+  display: flex;
+  justify-content: center;
+  padding: var(--espacio-2);
+  border-top: 1px solid var(--borde);
+}
+
+/* ---------- Estado vacío ---------- */
+.estado-vacio {
+  display: grid;
+  justify-items: center;
+  gap: var(--espacio-3);
+  padding: var(--espacio-7) var(--espacio-5);
+  text-align: center;
+}
+
+.estado-vacio__icono {
+  width: 72px;
+  height: 72px;
+  margin-bottom: var(--espacio-2);
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  background: var(--degradado-suave);
+  color: var(--cian);
+  animation: pulso 2.4s infinite;
+}
+
+.estado-vacio__icono svg {
+  width: 32px;
+  height: 32px;
+}
+
+.estado-vacio p {
+  max-width: 420px;
+}
+
+/* ---------- Formulario del proveedor de pagos (simulado) ---------- */
+.formulario-proveedor {
+  display: grid;
+  gap: var(--espacio-3);
+  padding: var(--espacio-4);
+  border: 1px dashed var(--borde-fuerte);
+  border-radius: var(--radio-md);
+  background: rgba(5, 7, 15, 0.4);
+}
+
+.formulario-proveedor__titulo {
+  font-size: var(--texto-xs);
+  color: var(--texto-tenue);
+}
+
+.formulario-proveedor__fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espacio-3);
+}
+
+/* Bloque que aparece al cambiar de estado (ej. medio de pago agregado) */
+.bloque-aparece {
+  animation: aparecer var(--lento) var(--curva);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  /* minmax(0, 1fr) evita que una tabla ancha empuje la página de costado */
+  .app {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .contenido {
+    min-width: 0;
+  }
+
+  .barra-lateral {
+    position: static;
+    height: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--espacio-3);
+    padding: var(--espacio-4);
+  }
+
+  .menu {
+    width: 100%;
+    grid-auto-flow: column;
+    justify-content: start;
+    overflow-x: auto;
+  }
+
+  .menu__item {
+    white-space: nowrap;
+  }
+
+  .menu__item--activo::before {
+    display: none;
+  }
+
+  /* En celular el perfil queda como un avatar arriba a la derecha */
+  .menu {
+    order: 3;
+  }
+
+  .perfil-zona {
+    margin: 0 0 0 auto;
+  }
+
+  .perfil {
+    padding: 2px;
+    border: none;
+    border-radius: 50%;
+  }
+
+  .perfil__texto,
+  .perfil__flecha {
+    display: none;
+  }
+
+  .desplegable--arriba {
+    top: calc(100% + 8px);
+    bottom: auto;
+    left: auto;
+    right: 0;
+    transform-origin: top right;
+  }
+
+  .contenido {
+    padding: var(--espacio-5) var(--espacio-4);
+  }
+
+  .medios {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,65 @@
+/* Tokens de diseño: todo color, tamaño y sombra sale de acá */
+:root {
+  /* Fondos */
+  --fondo: #05070f;
+  --fondo-elevado: #0a0f1e;
+  --superficie: rgba(255, 255, 255, 0.04);
+  --superficie-hover: rgba(255, 255, 255, 0.07);
+  --borde: rgba(148, 163, 184, 0.14);
+  --borde-fuerte: rgba(148, 163, 184, 0.28);
+
+  /* Texto */
+  --texto: #e6edf7;
+  --texto-suave: #8b97ad;
+  --texto-tenue: #5b667c;
+
+  /* Marca */
+  --cian: #22d3ee;
+  --violeta: #8b5cf6;
+  --degradado: linear-gradient(135deg, var(--cian), var(--violeta));
+  --degradado-suave: linear-gradient(135deg, rgba(34, 211, 238, 0.16), rgba(139, 92, 246, 0.16));
+
+  /* Estados */
+  --exito: #34d399;
+  --alerta: #fbbf24;
+  --peligro: #f87171;
+  --info: var(--cian);
+
+  /* Tipografía */
+  --fuente-titulos: "Space Grotesk", system-ui, sans-serif;
+  --fuente-texto: "Inter", system-ui, sans-serif;
+  --texto-xs: 0.75rem;
+  --texto-sm: 0.875rem;
+  --texto-md: 1rem;
+  --texto-lg: 1.25rem;
+  --texto-xl: 1.75rem;
+  --texto-2xl: 2.5rem;
+  --texto-3xl: clamp(2.5rem, 6vw, 4.5rem);
+
+  /* Espaciado */
+  --espacio-1: 4px;
+  --espacio-2: 8px;
+  --espacio-3: 12px;
+  --espacio-4: 16px;
+  --espacio-5: 24px;
+  --espacio-6: 32px;
+  --espacio-7: 48px;
+  --espacio-8: 72px;
+
+  /* Bordes redondeados */
+  --radio-sm: 8px;
+  --radio-md: 14px;
+  --radio-lg: 22px;
+  --radio-total: 999px;
+
+  /* Sombras y brillos */
+  --sombra: 0 10px 40px rgba(0, 0, 0, 0.45);
+  --brillo-cian: 0 0 24px rgba(34, 211, 238, 0.35);
+  --brillo-violeta: 0 0 24px rgba(139, 92, 246, 0.35);
+
+  /* Movimiento */
+  --curva: cubic-bezier(0.22, 1, 0.36, 1);
+  --rapido: 160ms;
+  --normal: 320ms;
+  --lento: 700ms;
+}
