@@ -1,0 +1,148 @@
+<section class="vista">
+  @if (cliente.error()) {
+    <a class="volver" routerLink="/empleado/clientes">← Clientes</a>
+    <div class="alerta" role="alert">⚠ No encontramos ese cliente.</div>
+  } @else if (cliente.value(); as cliente) {
+    <header class="encabezado">
+      <div>
+        <a class="volver" routerLink="/empleado/clientes">← Clientes</a>
+        <h1><span class="texto-degradado">{{ cliente.nombre }}</span></h1>
+      </div>
+      <button
+        type="button"
+        class="boton boton--primario"
+        [disabled]="!cliente.activo"
+        (click)="contratando.set(true)"
+      >
+        + Contratar para el cliente
+      </button>
+    </header>
+
+    <div class="ficha escalonado">
+      <article class="tarjeta" style="--i: 0">
+        <dl class="ficha__datos">
+          <div>
+            <dt>Email</dt>
+            <dd>{{ cliente.email }}</dd>
+          </div>
+          <div>
+            <dt>DNI</dt>
+            <dd>{{ cliente.dni }}</dd>
+          </div>
+          <div>
+            <dt>Teléfono</dt>
+            <dd>{{ cliente.telefono }}</dd>
+          </div>
+          <div>
+            <dt>Estado</dt>
+            <dd>
+              @if (cliente.activo) {
+                <span class="insignia insignia--activa">Activo</span>
+              } @else {
+                <span class="insignia insignia--inactivo">Inactivo</span>
+              }
+            </dd>
+          </div>
+          <button type="button" class="boton boton--chico" (click)="editando.set(true)">
+            Editar datos
+          </button>
+        </dl>
+      </article>
+
+      <article class="tarjeta" style="--i: 1">
+        <h2 class="tarjeta__titulo">Contrataciones</h2>
+        @for (contratacion of lista.value(); track contratacion.id) {
+          <div class="fila-contratacion">
+            <div>
+              <strong>{{ contratacion.planNombre }}</strong><br />
+              <span class="campo__ayuda">
+                {{ contratacion.direccion }} ·
+                @switch (contratacion.estado) {
+                  @case ('SUSPENDIDA_POR_FALTA_DE_PAGO') {
+                    suspendida el {{ contratacion.fechaSuspension | date: 'dd/MM/yyyy' }}
+                  }
+                  @case ('BAJA') {
+                    baja el {{ contratacion.fechaBaja | date: 'dd/MM/yyyy' }}
+                  }
+                  @default {
+                    desde {{ contratacion.fechaContratacion | date: 'dd/MM/yyyy' }}
+                  }
+                }
+              </span>
+            </div>
+            <span class="insignia" [class]="insignia[contratacion.estado].clase">
+              {{ insignia[contratacion.estado].texto }}
+            </span>
+            @switch (contratacion.estado) {
+              @case ('SUSPENDIDA_POR_FALTA_DE_PAGO') {
+                <button
+                  type="button"
+                  class="boton boton--chico"
+                  [disabled]="enviando()"
+                  (click)="reactivar(contratacion)"
+                >
+                  Reactivar
+                </button>
+              }
+              @case ('BAJA') {
+                <span></span>
+              }
+              @default {
+                <button
+                  type="button"
+                  class="boton boton--peligro boton--chico"
+                  [disabled]="enviando()"
+                  (click)="aDarDeBaja.set(contratacion)"
+                >
+                  Dar de baja
+                </button>
+              }
+            }
+          </div>
+        } @empty {
+          @if (lista.isLoading()) {
+            <div class="esqueleto ficha-cliente__esqueleto"></div>
+          } @else {
+            <p class="texto-suave">Todavía no tiene planes contratados.</p>
+          }
+        }
+      </article>
+    </div>
+
+    <app-contratar-plan
+      [abierto]="contratando()"
+      [cliente]="{ id: cliente.id, nombre: cliente.nombre }"
+      (cerrar)="contratando.set(false)"
+    />
+    <app-cliente-formulario
+      [abierto]="editando()"
+      [cliente]="cliente"
+      (guardado)="datosGuardados($event)"
+      (cerrar)="editando.set(false)"
+    />
+  } @else {
+    <div class="tarjeta esqueleto ficha-cliente__esqueleto"></div>
+  }
+</section>
+
+@let baja = aDarDeBaja();
+<app-modal
+  titulo="¿Dar de baja el plan?"
+  [descripcion]="
+    baja ? baja.planNombre + ' en ' + baja.direccion + '. Se deja de facturar desde hoy.' : ''
+  "
+  ancho="min(440px, 100%)"
+  [abierto]="baja !== null"
+  (cerrar)="aDarDeBaja.set(null)"
+>
+  <div class="modal__pie">
+    <button type="button" class="boton boton--fantasma" (click)="aDarDeBaja.set(null)">
+      Cancelar
+    </button>
+    @if (baja) {
+      <button type="button" class="boton boton--peligro" (click)="confirmarBaja(baja)">
+        Dar de baja
+      </button>
+    }
+  </div>
+</app-modal>

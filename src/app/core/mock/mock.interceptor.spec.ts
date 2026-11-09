@@ -7,7 +7,9 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { Observable, firstValueFrom } from 'rxjs';
 import { Perfil } from '../auth/auth.model';
+import { Cliente } from '../clientes/cliente.model';
 import { Contratacion } from '../contrataciones/contratacion.model';
+import { Instalacion } from '../contrataciones/instalacion.model';
 import { DebitoAutomatico, Factura } from '../facturacion/factura.model';
 import { Notificacion } from '../notificaciones/notificacion.model';
 import { Plan } from '../planes/plan.model';
@@ -166,6 +168,63 @@ describe('mockInterceptor', () => {
       const avisos = await firstValueFrom(http.get<Notificacion[]>('/api/notificaciones/mias'));
       expect(avisos.find((aviso) => aviso.id === 1)?.leida).toBe(true);
       expect(avisos[0].asunto).toBe('Nueva factura de Fibra 300');
+    });
+  });
+
+  describe('áreas del empleado y del técnico', () => {
+    const EMPLEADO = { email: 'empleado@systematele.com', contrasena: 'demo1234' };
+    const TECNICO = { email: 'tecnico@systematele.com', contrasena: 'demo1234' };
+
+    it('busca clientes por nombre, email o DNI', async () => {
+      await firstValueFrom(http.post('/api/auth/login', EMPLEADO));
+      const todos = await firstValueFrom(http.get<Cliente[]>('/api/clientes'));
+      const porDni = await firstValueFrom(
+        http.get<Cliente[]>('/api/clientes', { params: { busqueda: '33999' } }),
+      );
+      expect(todos.length).toBe(4);
+      expect(porDni.map((c) => c.nombre)).toEqual(['Diego Fernández']);
+    });
+
+    it('no deja dar de alta un cliente con un DNI repetido', async () => {
+      await firstValueFrom(http.post('/api/auth/login', EMPLEADO));
+      const repetido = { nombre: 'Otro', email: 'otro@mail.com', contrasena: 'secreta123', dni: '35123456', telefono: '11 4000-1000' };
+      const error = await errorDe(http.post('/api/clientes', repetido));
+      expect(error.status).toBe(409);
+      expect(error.error.detail).toBe('El DNI 35123456 ya está registrado');
+    });
+
+    it('asigna un técnico a una instalación sin técnico', async () => {
+      await firstValueFrom(http.post('/api/auth/login', EMPLEADO));
+      const asignada = await firstValueFrom(
+        http.put<Instalacion>('/api/instalaciones/7/tecnico', { tecnicoId: 4 }),
+      );
+      expect(asignada.tecnicoNombre).toBe('Sofía Díaz');
+    });
+
+    it('reactiva una suspendida y no deja reactivarla dos veces', async () => {
+      await firstValueFrom(http.post('/api/auth/login', EMPLEADO));
+      const reactivada = await firstValueFrom(http.put<Contratacion>('/api/contrataciones/3/reactivacion', null));
+      expect(reactivada.estado).toBe('ACTIVA');
+      const error = await errorDe(http.put('/api/contrataciones/3/reactivacion', null));
+      expect(error.status).toBe(409);
+    });
+
+    it('el técnico marca su instalación y pasa al historial', async () => {
+      await firstValueFrom(http.post('/api/auth/login', TECNICO));
+      const pendientes = await firstValueFrom(http.get<Instalacion[]>('/api/instalaciones/mias'));
+      expect(pendientes.map((i) => i.contratacionId)).toEqual([2]);
+
+      await firstValueFrom(http.put('/api/instalaciones/2/realizada', null));
+      const historial = await firstValueFrom(http.get<Instalacion[]>('/api/instalaciones/realizadas'));
+      expect(historial[0].contratacionId).toBe(2);
+      expect(historial.length).toBe(5);
+    });
+
+    it('un técnico no puede marcar la instalación de otro', async () => {
+      await firstValueFrom(http.post('/api/auth/login', TECNICO));
+      await firstValueFrom(http.put('/api/instalaciones/6/tecnico', { tecnicoId: 4 }));
+      const error = await errorDe(http.put('/api/instalaciones/6/realizada', null));
+      expect(error.status).toBe(403);
     });
   });
 });

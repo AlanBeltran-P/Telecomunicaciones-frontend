@@ -1,0 +1,80 @@
+<section class="vista">
+  <header class="encabezado">
+    <div>
+      <p class="texto-suave inicio__fecha">{{ hoy | date: "EEEE d 'de' MMMM" }}</p>
+      <h1>
+        Hola, <span class="texto-degradado">{{ primerNombre() }}</span>
+      </h1>
+    </div>
+  </header>
+
+  @if (datos.error()) {
+    <div class="alerta" role="alert">
+      ⚠ No pudimos cargar el resumen. Probá de nuevo en unos minutos.
+    </div>
+  } @else if (datos.value(); as datos) {
+    @let resumen = datos.resumen;
+    <div class="grilla escalonado">
+      <article class="tarjeta" style="--i: 0">
+        <p class="kpi__etiqueta">Clientes activos</p>
+        <p class="kpi__valor" [appContar]="resumen.clientesActivos"></p>
+      </article>
+      <article class="tarjeta" style="--i: 1">
+        <p class="kpi__etiqueta">Instalaciones sin técnico</p>
+        <p class="kpi__valor texto-degradado" [appContar]="resumen.sinTecnico.length"></p>
+      </article>
+      <article class="tarjeta" style="--i: 2">
+        <p class="kpi__etiqueta">Suspendidas por falta de pago</p>
+        <p class="kpi__valor" [appContar]="resumen.totalSuspendidas"></p>
+      </article>
+    </div>
+
+    <div class="dos-columnas escalonado">
+      <article class="tarjeta inicio-empleado__lista" style="--i: 0">
+        <h2 class="tarjeta__titulo">Esperan técnico</h2>
+        @for (instalacion of resumen.sinTecnico; track instalacion.contratacionId) {
+          <div class="fila-resumen">
+            <div>
+              <strong>{{ instalacion.planNombre }}</strong><br />
+              <span class="texto-suave">
+                {{ nombreDelCliente(datos.clientes, instalacion.clienteId) }} ·
+                {{ instalacion.direccion }}
+              </span>
+            </div>
+            <span class="insignia insignia--pendiente">Sin técnico</span>
+          </div>
+        } @empty {
+          <p class="texto-suave">Todas las instalaciones tienen técnico.</p>
+        }
+        <a class="boton inicio-empleado__ir" routerLink="/empleado/instalaciones">
+          Asignar técnicos →
+        </a>
+      </article>
+
+      <article class="tarjeta inicio-empleado__lista" style="--i: 1">
+        <h2 class="tarjeta__titulo">Suspendidas recientes</h2>
+        @for (contratacion of resumen.suspendidas; track contratacion.id) {
+          <div class="fila-resumen">
+            <div>
+              <strong>{{ nombreDelCliente(datos.clientes, contratacion.clienteId) }}</strong><br />
+              <span class="texto-suave">
+                {{ contratacion.planNombre }} · desde el
+                {{ contratacion.fechaSuspension | date: 'dd/MM' }}
+              </span>
+            </div>
+            <span class="insignia insignia--suspendida">Suspendida</span>
+          </div>
+        } @empty {
+          <p class="texto-suave">No hay contrataciones suspendidas.</p>
+        }
+        <a class="boton inicio-empleado__ir" routerLink="/empleado/suspendidas">Ver suspendidas →</a>
+      </article>
+    </div>
+  } @else {
+    <div class="grilla">
+      <div class="tarjeta esqueleto inicio-empleado__esqueleto"></div>
+      <div class="tarjeta esqueleto inicio-empleado__esqueleto"></div>
+      <div class="tarjeta esqueleto inicio-empleado__esqueleto"></div>
+    </div>
+  }
+</section>

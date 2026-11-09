@@ -1,8 +1,10 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { Contratacion, ContratarPlanRequest } from '../../../core/contrataciones/contratacion.model';
 import { ContratacionService } from '../../../core/contrataciones/contratacion.service';
 import { mensajeDeError } from '../../../core/http/mensaje-error';
 import { PlanService } from '../../../core/planes/plan.service';
@@ -11,7 +13,16 @@ import { ToastService } from '../../../shared/toast/toast.service';
 
 type Campo = 'planId' | 'direccion';
 
-/** Modal para contratar un plan del catálogo (POST /api/contrataciones). */
+export interface ClienteQueContrata {
+  id: number;
+  nombre: string;
+}
+
+/**
+ * Modal para contratar un plan del catálogo.
+ * Sin cliente contrata el cliente logueado (POST /api/contrataciones);
+ * con cliente, un empleado contrata por él (POST /api/contrataciones/clientes/{id}).
+ */
 @Component({
   selector: 'app-contratar-plan',
   imports: [CurrencyPipe, ReactiveFormsModule, Modal],
@@ -24,7 +35,18 @@ export class ContratarPlan {
   private readonly router = inject(Router);
 
   readonly abierto = input(false);
+  readonly cliente = input<ClienteQueContrata | null>(null);
   readonly cerrar = output<void>();
+
+  protected readonly titulo = computed(() => {
+    const cliente = this.cliente();
+    return cliente ? `Contratar para ${cliente.nombre}` : 'Contratar un plan';
+  });
+  protected readonly descripcion = computed(() =>
+    this.cliente()
+      ? 'Queda pendiente de instalación hasta que se asigne un técnico.'
+      : 'Te avisamos cuando asignemos un técnico para la instalación.',
+  );
 
   protected readonly planes = rxResource({
     stream: () => this.planService.listar(),
@@ -51,7 +73,7 @@ export class ContratarPlan {
     }
     this.enviando.set(true);
     this.error.set(null);
-    this.contrataciones.contratar({ planId, direccion }).subscribe({
+    this.pedido({ planId, direccion }).subscribe({
       next: () => this.terminar(),
       error: (error: unknown) => {
         this.error.set(mensajeDeError(error));
@@ -67,9 +89,23 @@ export class ContratarPlan {
     this.cerrar.emit();
   }
 
+  private pedido(datos: ContratarPlanRequest): Observable<Contratacion> {
+    const cliente = this.cliente();
+    return cliente
+      ? this.contrataciones.contratarParaCliente(cliente.id, datos)
+      : this.contrataciones.contratar(datos);
+  }
+
   private terminar(): void {
-    this.toasts.mostrar('Plan contratado. Te avisamos cuando haya un técnico asignado.');
+    const paraUnCliente = this.cliente() !== null;
+    this.toasts.mostrar(
+      paraUnCliente
+        ? 'Plan contratado para el cliente'
+        : 'Plan contratado. Te avisamos cuando haya un técnico asignado.',
+    );
     this.cancelar();
-    void this.router.navigate(['/cliente/planes']);
+    if (!paraUnCliente) {
+      void this.router.navigate(['/cliente/planes']);
+    }
   }
 }

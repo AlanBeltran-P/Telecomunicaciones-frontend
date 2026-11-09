@@ -1,0 +1,64 @@
+<section class="vista">
+  <header class="encabezado">
+    <div>
+      <p class="texto-suave tecnico__fecha">{{ hoy | date: "EEEE d 'de' MMMM" }}</p>
+      <h1>Instalaciones <span class="texto-degradado">pendientes</span></h1>
+    </div>
+  </header>
+
+  @if (lista.error()) {
+    <div class="alerta" role="alert">
+      ⚠ No pudimos cargar tus instalaciones. Probá de nuevo en unos minutos.
+    </div>
+  } @else if (lista.isLoading()) {
+    <div class="trabajos">
+      <div class="tarjeta esqueleto tecnico__esqueleto"></div>
+      <div class="tarjeta esqueleto tecnico__esqueleto"></div>
+    </div>
+  } @else if (lista.value().length === 0) {
+    <article class="tarjeta estado-vacio tecnico__vacio">
+      <span class="estado-vacio__icono"><app-icono nombre="hecho" /></span>
+      <h2 class="tarjeta__titulo">No tenés instalaciones pendientes</h2>
+      <p class="texto-suave">Cuando un empleado te asigne una, aparece acá.</p>
+    </article>
+  } @else {
+    <div class="trabajos escalonado">
+      @for (instalacion of lista.value(); track instalacion.contratacionId) {
+        @let hecha = instalacion.estado === 'ACTIVA';
+        <article class="tarjeta tarjeta--interactiva trabajo" [style.--i]="$index">
+          <span
+            class="trabajo__pin"
+            [class.trabajo__pin--radar]="!hecha"
+            [class.trabajo__pin--hecho]="hecha"
+          >
+            <app-icono [nombre]="hecha ? 'hecho' : 'ubicacion'" />
+          </span>
+          <div>
+            <div class="trabajo__titulo">
+              <h3 class="tarjeta__titulo tecnico__direccion">{{ instalacion.direccion }}</h3>
+              @if (hecha) {
+                <span class="insignia insignia--activa">Instalada</span>
+              } @else {
+                <span class="insignia insignia--instalacion">Pendiente</span>
+              }
+            </div>
+            <p class="texto-suave">
+              {{ instalacion.planNombre }} · contratado el
+              {{ instalacion.fechaContratacion | date: 'dd/MM/yyyy' }}
+            </p>
+          </div>
+          @if (!hecha) {
+            <button
+              type="button"
+              class="boton boton--primario"
+              [disabled]="guardando() === instalacion.contratacionId"
+              (click)="marcarRealizada(instalacion)"
+            >
+              ✓ Marcar realizada
+            </button>
+          }
+        </article>
+      }
+    </div>
+  }
+</section>

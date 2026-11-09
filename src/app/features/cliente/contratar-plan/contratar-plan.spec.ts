@@ -91,4 +91,19 @@ describe('ContratarPlan', () => {
 
     expect(textoEnPantalla(fixture)).toContain('Ya tenés contratado el plan Fibra 300');
   });
+
+  it('un empleado contrata para el cliente que se le pasa', async () => {
+    fixture.componentRef.setInput('cliente', { id: 11, nombre: 'Juan Torres' });
+    await fixture.whenStable();
+    expect(textoEnPantalla(fixture)).toContain('Contratar para Juan Torres');
+
+    elegirPlan('Móvil 20 GB');
+    await escribir(fixture, 'direccion', 'Mitre 890');
+    enviar();
+
+    const pedido = backend.expectOne({ method: 'POST', url: '/api/contrataciones/clientes/11' });
+    expect(pedido.request.body).toEqual({ planId: 4, direccion: 'Mitre 890' });
+    pedido.flush({}, { status: 201, statusText: 'Created' });
+    await fixture.whenStable();
+  });
 });

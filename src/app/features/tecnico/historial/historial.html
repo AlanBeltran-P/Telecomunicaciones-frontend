@@ -1,0 +1,54 @@
+<section class="vista">
+  <header class="encabezado">
+    <div>
+      <h1><span class="texto-degradado">Historial</span></h1>
+      <p class="texto-suave">Las instalaciones que ya hiciste.</p>
+    </div>
+  </header>
+
+  @if (lista.error()) {
+    <div class="alerta" role="alert">
+      ⚠ No pudimos cargar tu historial. Probá de nuevo en unos minutos.
+    </div>
+  } @else if (lista.isLoading()) {
+    <div class="trabajos">
+      <div class="tarjeta esqueleto tecnico__esqueleto"></div>
+      <div class="tarjeta esqueleto tecnico__esqueleto"></div>
+    </div>
+  } @else {
+    <div class="grilla escalonado tecnico__kpis">
+      <article class="tarjeta" style="--i: 0">
+        <p class="kpi__etiqueta">Realizadas este mes</p>
+        <p class="kpi__valor texto-degradado" [appContar]="esteMes()"></p>
+      </article>
+      <article class="tarjeta" style="--i: 1">
+        <p class="kpi__etiqueta">Realizadas en total</p>
+        <p class="kpi__valor" [appContar]="lista.value().length"></p>
+      </article>
+    </div>
+
+    <div class="trabajos escalonado">
+      @for (instalacion of lista.value(); track instalacion.contratacionId) {
+        <article class="tarjeta trabajo" [style.--i]="$index">
+          <span class="trabajo__pin trabajo__pin--hecho"><app-icono nombre="hecho" /></span>
+          <div>
+            <div class="trabajo__titulo">
+              <h3 class="tarjeta__titulo tecnico__direccion">{{ instalacion.direccion }}</h3>
+              <span class="insignia insignia--activa">Instalada</span>
+            </div>
+            <p class="texto-suave">
+              {{ instalacion.planNombre }} ·
+              {{ instalacion.fechaInstalacion | date: 'dd/MM/yyyy' }}
+            </p>
+          </div>
+        </article>
+      } @empty {
+        <article class="tarjeta estado-vacio tecnico__vacio">
+          <span class="estado-vacio__icono"><app-icono nombre="reloj" /></span>
+          <h2 class="tarjeta__titulo">Todavía no hiciste instalaciones</h2>
+          <p class="texto-suave">Cuando marques una como realizada, aparece acá.</p>
+        </article>
+      }
+    </div>
+  }
+</section>

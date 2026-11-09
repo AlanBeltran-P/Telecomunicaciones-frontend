@@ -1,0 +1,84 @@
+<app-modal
+  [titulo]="esAlta() ? 'Nuevo cliente' : 'Datos del cliente'"
+  [abierto]="abierto()"
+  (cerrar)="cerrar.emit()"
+>
+  <form class="modal__formulario" [formGroup]="formulario" (ngSubmit)="guardar()">
+    <label class="campo" [class.campo--error]="campoInvalido('nombre')">
+      <span class="campo__etiqueta">Nombre y apellido</span>
+      <input class="campo__control" name="nombre" formControlName="nombre" placeholder="Ana Pérez" />
+      @if (campoInvalido('nombre')) {
+        <span class="campo__ayuda">Ingresá el nombre del cliente.</span>
+      }
+    </label>
+
+    <label class="campo" [class.campo--error]="campoInvalido('email')">
+      <span class="campo__etiqueta">Email</span>
+      <input
+        class="campo__control"
+        name="email"
+        type="email"
+        formControlName="email"
+        placeholder="cliente@email.com"
+      />
+      @if (campoInvalido('email')) {
+        <span class="campo__ayuda">Ingresá un email válido.</span>
+      }
+    </label>
+
+    @if (esAlta()) {
+      <label class="campo" [class.campo--error]="campoInvalido('contrasena')">
+        <span class="campo__etiqueta">Contraseña inicial</span>
+        <input
+          class="campo__control"
+          name="contrasena"
+          type="password"
+          formControlName="contrasena"
+          placeholder="Mínimo 8 caracteres"
+          autocomplete="new-password"
+        />
+        <span class="campo__ayuda">Con esta contraseña el cliente entra a su cuenta.</span>
+      </label>
+    }
+
+    <div class="formulario__fila">
+      <label class="campo" [class.campo--error]="campoInvalido('dni')">
+        <span class="campo__etiqueta">DNI</span>
+        <input
+          class="campo__control"
+          name="dni"
+          formControlName="dni"
+          placeholder="7 u 8 números"
+          inputmode="numeric"
+        />
+        @if (campoInvalido('dni')) {
+          <span class="campo__ayuda">Tiene que tener 7 u 8 números.</span>
+        }
+      </label>
+      <label class="campo" [class.campo--error]="campoInvalido('telefono')">
+        <span class="campo__etiqueta">Teléfono</span>
+        <input
+          class="campo__control"
+          name="telefono"
+          formControlName="telefono"
+          placeholder="+54 11 ..."
+          inputmode="tel"
+        />
+        @if (campoInvalido('telefono')) {
+          <span class="campo__ayuda">No es un teléfono válido.</span>
+        }
+      </label>
+    </div>
+
+    @if (error()) {
+      <div class="alerta" role="alert">⚠ {{ error() }}</div>
+    }
+
+    <div class="modal__pie">
+      <button type="button" class="boton boton--fantasma" (click)="cerrar.emit()">Cancelar</button>
+      <button type="submit" class="boton boton--primario" [disabled]="enviando()">
+        {{ enviando() ? 'Guardando…' : 'Guardar' }}
+      </button>
+    </div>
+  </form>
+</app-modal>

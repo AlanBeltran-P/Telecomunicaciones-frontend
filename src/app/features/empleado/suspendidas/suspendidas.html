@@ -1,0 +1,70 @@
+<section class="vista">
+  <header class="encabezado">
+    <div>
+      <h1>Suspendidas por <span class="texto-degradado">falta de pago</span></h1>
+      <p class="texto-suave">Se suspenden solas a los 14 días de vencida la factura.</p>
+    </div>
+  </header>
+
+  @if (datos.error()) {
+    <div class="alerta" role="alert">
+      ⚠ No pudimos cargar las contrataciones suspendidas. Probá de nuevo en unos minutos.
+    </div>
+  } @else if (datos.value(); as datos) {
+    @if (datos.suspendidas.length === 0) {
+      <article class="tarjeta estado-vacio">
+        <span class="estado-vacio__icono"><app-icono nombre="pausa" /></span>
+        <h2 class="tarjeta__titulo">No hay contrataciones suspendidas</h2>
+        <p class="texto-suave">Todos los clientes están al día con sus pagos.</p>
+      </article>
+    } @else {
+      <div class="tarjeta tabla-envoltura suspendidas__tabla">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Plan</th>
+              <th>Dirección</th>
+              <th>Suspendida</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (contratacion of datos.suspendidas; track contratacion.id) {
+              <tr>
+                <td>
+                  <a [routerLink]="['/empleado/clientes', contratacion.clienteId]">
+                    {{ nombreDelCliente(datos.clientes, contratacion.clienteId) }}
+                  </a>
+                </td>
+                <td>{{ contratacion.planNombre }}</td>
+                <td>{{ contratacion.direccion }}</td>
+                <td>{{ contratacion.fechaSuspension | date: 'dd/MM/yyyy' }}</td>
+                <td>
+                  <span class="insignia" [class]="insignia[contratacion.estado].clase">
+                    {{ insignia[contratacion.estado].texto }}
+                  </span>
+                </td>
+                <td>
+                  @if (contratacion.estado === 'SUSPENDIDA_POR_FALTA_DE_PAGO') {
+                    <button
+                      type="button"
+                      class="boton boton--primario boton--chico"
+                      [disabled]="guardando() === contratacion.id"
+                      (click)="reactivar(contratacion)"
+                    >
+                      Reactivar
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  } @else {
+    <div class="tarjeta esqueleto suspendidas__esqueleto"></div>
+  }
+</section>

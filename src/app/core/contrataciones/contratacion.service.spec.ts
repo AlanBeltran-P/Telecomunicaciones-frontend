@@ -32,6 +32,26 @@ describe('ContratacionService', () => {
     expect(servicio.cambios()).toBe(1);
   });
 
+  it('un empleado contrata para un cliente y también avisa el cambio', () => {
+    servicio.contratarParaCliente(11, { planId: 2, direccion: 'Mitre 890' }).subscribe();
+    backend.expectOne({ method: 'POST', url: '/api/contrataciones/clientes/11' }).flush({});
+    expect(servicio.cambios()).toBe(1);
+  });
+
+  it('un empleado ve, da de baja y reactiva contrataciones', () => {
+    servicio.delCliente(10).subscribe();
+    backend.expectOne({ method: 'GET', url: '/api/contrataciones/clientes/10' }).flush([]);
+
+    servicio.suspendidas().subscribe();
+    backend.expectOne({ method: 'GET', url: '/api/contrataciones/suspendidas' }).flush([]);
+
+    servicio.darDeBaja(3).subscribe();
+    backend.expectOne({ method: 'PUT', url: '/api/contrataciones/3/baja' }).flush({});
+
+    servicio.reactivar(3).subscribe();
+    backend.expectOne({ method: 'PUT', url: '/api/contrataciones/3/reactivacion' }).flush({});
+  });
+
   it('si la contratación falla, la lista no cambia', () => {
     servicio.contratar({ planId: 1, direccion: 'Mitre 10' }).subscribe({ error: () => {} });
     backend
