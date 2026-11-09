@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard, invitadoGuard, rolGuard } from './core/guards/auth.guard';
 import { Shell } from './core/layout/shell/shell';
+import { MENU_ADMIN } from './features/admin/menu-admin';
 import { MENU_CLIENTE } from './features/cliente/menu-cliente';
 import { MENU_EMPLEADO } from './features/empleado/menu-empleado';
 import { MENU_TECNICO } from './features/tecnico/menu-tecnico';
@@ -47,6 +48,13 @@ export const routes: Routes = [
     canActivate: [authGuard, rolGuard('TECNICO')],
     data: { menu: MENU_TECNICO },
     loadChildren: () => import('./features/tecnico/tecnico.routes').then((m) => m.RUTAS_TECNICO),
+  },
+  {
+    path: 'admin',
+    component: Shell,
+    canActivate: [authGuard, rolGuard('ADMINISTRADOR')],
+    data: { menu: MENU_ADMIN },
+    loadChildren: () => import('./features/admin/admin.routes').then((m) => m.RUTAS_ADMIN),
   },
   { path: '**', redirectTo: '' },
 ];

@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+/* La línea se "dibuja" de izquierda a derecha (pathLength="1" en el path) */
+.grafico-lineas__linea {
+  stroke-dasharray: 1;
+  animation: dibujar-linea 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes dibujar-linea {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* El cuadrito sigue a la cruz, arriba del gráfico */
+.grafico-lineas__detalle {
+  position: absolute;
+  top: 0;
+  transform: translateX(16px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grafico-lineas__linea {
+    animation: none;
+  }
+}

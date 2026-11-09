@@ -12,6 +12,8 @@ import { Contratacion } from '../contrataciones/contratacion.model';
 import { Instalacion } from '../contrataciones/instalacion.model';
 import { DebitoAutomatico, Factura } from '../facturacion/factura.model';
 import { Notificacion } from '../notificaciones/notificacion.model';
+import { ReporteFacturacion } from '../reportes/reporte.model';
+import { Usuario } from '../usuarios/usuario.model';
 import { Plan } from '../planes/plan.model';
 import { mockInterceptor } from './mock.interceptor';
 
@@ -225,6 +227,52 @@ describe('mockInterceptor', () => {
       await firstValueFrom(http.put('/api/instalaciones/6/tecnico', { tecnicoId: 4 }));
       const error = await errorDe(http.put('/api/instalaciones/6/realizada', null));
       expect(error.status).toBe(403);
+    });
+  });
+
+  describe('área del administrador', () => {
+    const ADMIN = { email: 'admin@systematele.com', contrasena: 'demo1234' };
+
+    beforeEach(async () => {
+      await firstValueFrom(http.post('/api/auth/login', ADMIN));
+    });
+
+    it('lista solo al personal, sin clientes', async () => {
+      const personal = await firstValueFrom(http.get<Usuario[]>('/api/usuarios'));
+      expect(personal.every((u) => u.rol !== 'CLIENTE')).toBe(true);
+      expect(personal.length).toBe(5);
+    });
+
+    it('no deja dar de alta un cliente desde la gestión de usuarios', async () => {
+      const cliente = { nombre: 'X', email: 'x@mail.com', contrasena: 'secreta123', rol: 'CLIENTE' };
+      const error = await errorDe(http.post('/api/usuarios', cliente));
+      expect(error.status).toBe(400);
+      expect(error.error.detail).toBe('El rol CLIENTE no se asigna desde la gestión de usuarios');
+    });
+
+    it('el administrador no puede cambiarse su propio rol', async () => {
+      const error = await errorDe(http.put('/api/usuarios/1/rol', { rol: 'EMPLEADO' }));
+      expect(error.status).toBe(400);
+    });
+
+    it('un plan dado de baja deja de aparecer en el catálogo', async () => {
+      await firstValueFrom(http.delete('/api/planes/5'));
+      const planes = await firstValueFrom(http.get<Plan[]>('/api/planes'));
+      expect(planes.map((p) => p.nombre)).not.toContain('Empresas 500');
+    });
+
+    it('los reportes respetan el rango y la agrupación', async () => {
+      const params = { desde: '2026-01-01', hasta: '2026-12-31', agrupacion: 'MES' };
+      const reporte = await firstValueFrom(http.get<ReporteFacturacion>('/api/facturas/reporte', { params }));
+      expect(reporte.serie.length).toBe(12);
+      expect(reporte.serie[0].periodo).toBe('2026-01');
+    });
+
+    it('un rango al revés da el error del backend', async () => {
+      const params = { desde: '2026-12-01', hasta: '2026-11-01', agrupacion: 'DIA' };
+      const error = await errorDe(http.get('/api/usuarios/reporte', { params }));
+      expect(error.status).toBe(400);
+      expect(error.error.detail).toBe('La fecha desde (2026-12-01) no puede ser posterior a la fecha hasta (2026-11-01)');
     });
   });
 });

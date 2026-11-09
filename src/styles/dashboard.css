@@ -1,0 +1,416 @@
+/* Dashboard del administrador: filtros, indicadores y gráficos */
+
+/* En :root porque el tooltip vive fuera del dashboard */
+:root {
+  /* Colores de las series, validados contra la superficie oscura de las tarjetas (#0d1220):
+     separación para daltonismo, contraste >= 3:1 y banda de luminosidad, todo OK */
+  --serie-1: #3987e5;
+  --serie-2: #d95926;
+  --serie-3: #199e70;
+  --superficie-grafico: #0d1220;
+  --grilla: rgba(148, 163, 184, 0.12);
+}
+
+.dashboard {
+  display: grid;
+  gap: var(--espacio-5);
+  transition: opacity var(--normal);
+}
+
+/* Mientras llegan los datos nuevos, se mantiene lo anterior más tenue (sin saltos) */
+.dashboard--cargando .tarjeta {
+  opacity: 0.5;
+}
+
+/* ---------- Filtros ---------- */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-3);
+}
+
+.segmentado {
+  display: inline-flex;
+  padding: 4px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-total);
+  background: rgba(5, 7, 15, 0.5);
+}
+
+.segmentado button {
+  padding: 8px 18px;
+  border: none;
+  border-radius: var(--radio-total);
+  background: none;
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--normal), color var(--normal);
+}
+
+.segmentado button[aria-pressed="true"] {
+  background: var(--degradado);
+  color: #04121a;
+  box-shadow: var(--brillo-cian);
+}
+
+.filtros .campo__control {
+  width: auto;
+  padding: 9px 14px;
+  color-scheme: dark;
+}
+
+.filtros__periodo {
+  margin-left: auto;
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+}
+
+/* ---------- Grilla del dashboard ---------- */
+.tablero {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--espacio-4);
+}
+
+.ancho-12 { grid-column: span 12; }
+.ancho-8 { grid-column: span 8; }
+.ancho-6 { grid-column: span 6; }
+.ancho-4 { grid-column: span 4; }
+
+/* ---------- Indicadores ---------- */
+/* El indicador principal ocupa dos filas a la izquierda; los otros seis van en 3 × 2 */
+.indicadores {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
+  gap: var(--espacio-4);
+}
+
+.indicador--principal {
+  grid-row: span 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Números grandes con cifras proporcionales: tabulares solo en columnas */
+.dashboard .kpi__valor {
+  font-size: var(--texto-xl);
+  font-variant-numeric: normal;
+}
+
+.indicador--principal .kpi__valor {
+  font-size: 3.25rem;
+  line-height: 1.1;
+}
+
+.kpi__detalle {
+  margin-top: var(--espacio-2);
+  font-size: var(--texto-xs);
+  color: var(--texto-tenue);
+}
+
+/* Barra fina de "cuánto de lo facturado se cobró" */
+.medidor {
+  height: 8px;
+  margin-top: var(--espacio-3);
+  border-radius: var(--radio-total);
+  background: rgba(57, 135, 229, 0.18);
+  overflow: hidden;
+}
+
+.medidor__relleno {
+  height: 100%;
+  width: 0;
+  border-radius: var(--radio-total);
+  background: var(--serie-1);
+  transition: width var(--lento) var(--curva);
+}
+
+/* ---------- Tarjeta de gráfico ---------- */
+.grafico-cabeza {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--espacio-3);
+  margin-bottom: var(--espacio-4);
+  flex-wrap: wrap;
+}
+
+.grafico-cabeza p {
+  font-size: var(--texto-xs);
+  color: var(--texto-tenue);
+}
+
+.grafico {
+  position: relative;
+  min-height: 240px;
+}
+
+/* Tarjeta cuyo gráfico se estira hasta el alto de la fila */
+.tarjeta--grafico {
+  display: flex;
+  flex-direction: column;
+}
+
+.tarjeta--grafico .grafico {
+  flex: 1;
+}
+
+.tarjeta--grafico .grafico svg {
+  position: absolute;
+  inset: 0;
+}
+
+.grafico svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+.grafico text {
+  fill: var(--texto-tenue);
+  font-family: var(--fuente-texto);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.grafico .etiqueta-final {
+  fill: var(--texto-suave);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.grafico__zona {
+  cursor: crosshair;
+  outline: none;
+}
+
+.grafico__zona:focus-visible {
+  outline: 1px solid var(--borde-fuerte);
+}
+
+/* ---------- Leyenda ---------- */
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2) var(--espacio-4);
+  font-size: var(--texto-xs);
+  color: var(--texto-suave);
+}
+
+.leyenda span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.leyenda__linea {
+  width: 14px;
+  height: 2px;
+  border-radius: 2px;
+}
+
+.leyenda__cuadro {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* ---------- Tooltip ---------- */
+.grafico-tooltip {
+  position: fixed;
+  z-index: 70;
+  min-width: 160px;
+  padding: var(--espacio-3);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-md);
+  background: rgba(10, 15, 30, 0.96);
+  box-shadow: var(--sombra);
+  font-size: var(--texto-xs);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--rapido);
+}
+
+.grafico-tooltip--visible {
+  opacity: 1;
+}
+
+.grafico-tooltip__titulo {
+  margin-bottom: 6px;
+  color: var(--texto-tenue);
+}
+
+.grafico-tooltip__fila {
+  display: grid;
+  grid-template-columns: 12px auto 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.grafico-tooltip__fila strong {
+  color: var(--texto);
+  font-size: var(--texto-sm);
+}
+
+.grafico-tooltip__fila span:last-child {
+  color: var(--texto-suave);
+}
+
+.grafico-tooltip__clave {
+  width: 12px;
+  height: 2px;
+  border-radius: 2px;
+}
+
+/* ---------- Barras horizontales ---------- */
+.barras {
+  display: grid;
+  gap: var(--espacio-3);
+}
+
+/* Nombre y valor arriba, la barra abajo: así los nombres largos no se cortan */
+.barra {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "nombre valor"
+    "pista pista";
+  align-items: center;
+  gap: 6px var(--espacio-3);
+  padding: 4px 0;
+  border-radius: var(--radio-sm);
+  font-size: var(--texto-sm);
+  outline: none;
+}
+
+.barra__nombre {
+  grid-area: nombre;
+  color: var(--texto-suave);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.barra__pista {
+  grid-area: pista;
+  height: 12px;
+}
+
+/* Cuadrada contra la base, redondeada en el extremo del dato */
+.barra__relleno {
+  height: 100%;
+  width: 0;
+  border-radius: 0 4px 4px 0;
+  background: var(--serie-1);
+  transition: width var(--lento) var(--curva), filter var(--rapido);
+}
+
+.barra:hover .barra__relleno,
+.barra:focus-visible .barra__relleno {
+  filter: brightness(1.25);
+}
+
+.barra__valor {
+  grid-area: valor;
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Barra segmentada (un total partido en partes) ---------- */
+.segmentos {
+  display: flex;
+  gap: 2px;
+  height: 28px;
+  margin-bottom: var(--espacio-3);
+}
+
+.segmento {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding-left: 8px;
+  border-radius: 4px;
+  color: #04121a;
+  font-size: var(--texto-xs);
+  font-weight: 700;
+  outline: none;
+  transition: flex-grow var(--lento) var(--curva), filter var(--rapido);
+}
+
+.segmento:hover,
+.segmento:focus-visible {
+  filter: brightness(1.15);
+}
+
+/* ---------- Tabla de la serie ---------- */
+.tabla-serie {
+  max-height: 280px;
+  margin-top: var(--espacio-4);
+  overflow: auto;
+}
+
+.tabla-serie .tabla td,
+.tabla-serie .tabla th {
+  padding: 8px 12px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabla-serie .tabla td:first-child,
+.tabla-serie .tabla th:first-child {
+  text-align: left;
+}
+
+/* ---------- Datos sueltos ---------- */
+.datos-sueltos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--espacio-4);
+}
+
+.dato-suelto__valor {
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-lg);
+  font-weight: 700;
+}
+
+.dato-suelto__etiqueta {
+  font-size: var(--texto-xs);
+  color: var(--texto-tenue);
+}
+
+/* Con menos movimiento, los rellenos aparecen directo en su tamaño final */
+@media (prefers-reduced-motion: reduce) {
+  .medidor__relleno,
+  .barra__relleno,
+  .segmento {
+    transition: none !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .ancho-8,
+  .ancho-6,
+  .ancho-4 {
+    grid-column: span 12;
+  }
+
+  .indicadores {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .indicador--principal {
+    grid-row: auto;
+    grid-column: 1 / -1;
+  }
+
+  .filtros__periodo {
+    margin-left: 0;
+    width: 100%;
+  }
+}

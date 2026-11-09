@@ -1,0 +1,85 @@
+<section class="vista">
+  <header class="encabezado">
+    <div>
+      <h1>Catálogo de <span class="texto-degradado">planes</span></h1>
+      <p class="texto-suave">Lo que ven los clientes en la página pública.</p>
+    </div>
+    <button type="button" class="boton boton--primario" (click)="nuevo()">+ Nuevo plan</button>
+  </header>
+
+  @if (lista.error()) {
+    <div class="alerta" role="alert">
+      ⚠ No pudimos cargar los planes. Probá de nuevo en unos minutos.
+    </div>
+  } @else if (lista.isLoading()) {
+    <div class="grilla">
+      <div class="tarjeta esqueleto planes-admin__esqueleto"></div>
+      <div class="tarjeta esqueleto planes-admin__esqueleto"></div>
+      <div class="tarjeta esqueleto planes-admin__esqueleto"></div>
+    </div>
+  } @else if (lista.value().length === 0) {
+    <article class="tarjeta estado-vacio">
+      <span class="estado-vacio__icono"><app-icono nombre="wifi" /></span>
+      <h2 class="tarjeta__titulo">No hay planes en el catálogo</h2>
+      <p class="texto-suave">Creá el primero con "+ Nuevo plan".</p>
+    </article>
+  } @else {
+    <div class="grilla escalonado">
+      @for (plan of lista.value(); track plan.id) {
+        <article class="tarjeta tarjeta--interactiva plan-admin" [style.--i]="$index">
+          <div class="seccion__titulo">
+            <h3 class="tarjeta__titulo planes-admin__nombre">{{ plan.nombre }}</h3>
+            <span class="insignia insignia--activa">Activo</span>
+          </div>
+          <p class="texto-suave">{{ plan.descripcion || 'Sin descripción.' }}</p>
+          <div class="plan-admin__pie">
+            <span class="monto planes-admin__precio">
+              {{ plan.precio | currency: 'ARS' : 'symbol-narrow' : '1.0-2' }}
+            </span>
+            <div class="plan-admin__acciones">
+              <button type="button" class="boton boton--chico" (click)="editar(plan)">Editar</button>
+              <button
+                type="button"
+                class="boton boton--peligro boton--chico"
+                (click)="aDarDeBaja.set(plan)"
+              >
+                Dar de baja
+              </button>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>
+
+<app-plan-formulario
+  [abierto]="formularioAbierto()"
+  [plan]="editando()"
+  (guardado)="guardado($event)"
+  (cerrar)="formularioAbierto.set(false)"
+/>
+
+@let baja = aDarDeBaja();
+<app-modal
+  titulo="¿Dar de baja el plan?"
+  [descripcion]="
+    baja
+      ? baja.nombre + ' deja de ofrecerse. Los clientes que ya lo tienen lo siguen teniendo.'
+      : ''
+  "
+  ancho="min(440px, 100%)"
+  [abierto]="baja !== null"
+  (cerrar)="aDarDeBaja.set(null)"
+>
+  <div class="modal__pie">
+    <button type="button" class="boton boton--fantasma" (click)="aDarDeBaja.set(null)">
+      Cancelar
+    </button>
+    @if (baja) {
+      <button type="button" class="boton boton--peligro" (click)="confirmarBaja(baja)">
+        Dar de baja
+      </button>
+    }
+  </div>
+</app-modal>

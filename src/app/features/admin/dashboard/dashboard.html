@@ -1,0 +1,216 @@
+<section class="vista">
+  <header class="encabezado">
+    <div>
+      <p class="texto-suave">Registros del período</p>
+      <h1><span class="texto-degradado">Dashboard</span></h1>
+    </div>
+  </header>
+
+  <div class="dashboard" [class.dashboard--cargando]="cargando()">
+    <!-- Filtros: una sola fila, arriba de todo lo que afectan -->
+    <div class="filtros">
+      <div class="segmentado" role="group" aria-label="Período">
+        <button type="button" [attr.aria-pressed]="modo() === 'dia'" (click)="elegirModo('dia')">Día</button>
+        <button type="button" [attr.aria-pressed]="modo() === 'mes'" (click)="elegirModo('mes')">Mes</button>
+        <button type="button" [attr.aria-pressed]="modo() === 'anio'" (click)="elegirModo('anio')">Año</button>
+      </div>
+      @switch (modo()) {
+        @case ('dia') {
+          <input class="campo__control" type="date" aria-label="Día" [value]="dia()" (change)="elegirFecha($event)" />
+        }
+        @case ('mes') {
+          <input class="campo__control" type="month" aria-label="Mes" [value]="mes()" (change)="elegirFecha($event)" />
+        }
+        @case ('anio') {
+          <select class="campo__control" aria-label="Año" (change)="elegirAnio($event)">
+            @for (anio of anios; track anio) {
+              <option [value]="anio" [selected]="anio === fecha().getFullYear()">{{ anio }}</option>
+            }
+          </select>
+        }
+      }
+      <button type="button" class="boton" (click)="volverAHoy()">Hoy</button>
+      <span class="filtros__periodo" aria-live="polite">{{ descripcion() }}</span>
+    </div>
+
+    @if (error() && !tablero()) {
+      <div class="alerta" role="alert">⚠ No pudimos cargar los reportes. Probá de nuevo en unos minutos.</div>
+    }
+
+    @if (tablero(); as t) {
+      <!-- Indicadores -->
+      <div class="indicadores">
+        <article class="tarjeta indicador--principal">
+          <p class="kpi__etiqueta">Cobrado</p>
+          <p class="kpi__valor">{{ pesosCorto(t.cobrado) }}</p>
+          <div class="medidor"><div class="medidor__relleno" [style.width.%]="t.porcentajeCobrado"></div></div>
+          <p class="kpi__detalle">{{ pesos(t.cobrado) }} · {{ t.porcentajeCobrado }}% de lo facturado en el período</p>
+        </article>
+        <article class="tarjeta">
+          <p class="kpi__etiqueta">Facturado</p>
+          <p class="kpi__valor">{{ pesosCorto(t.facturado) }}</p>
+        </article>
+        <article class="tarjeta">
+          <p class="kpi__etiqueta">Deuda actual</p>
+          <p class="kpi__valor">{{ pesosCorto(t.deudaActual) }}</p>
+          <p class="kpi__detalle">Pendientes + vencidas, a hoy</p>
+        </article>
+        <article class="tarjeta">
+          <p class="kpi__etiqueta">Clientes nuevos</p>
+          <p class="kpi__valor">{{ numero(t.clientesNuevos) }}</p>
+        </article>
+        <article class="tarjeta">
+          <p class="kpi__etiqueta">Contrataciones nuevas</p>
+          <p class="kpi__valor">{{ numero(t.contratacionesNuevas) }}</p>
+        </article>
+        <article class="tarjeta">
+          <p class="kpi__etiqueta">Instalaciones realizadas</p>
+          <p class="kpi__valor">{{ numero(t.instalacionesRealizadas) }}</p>
+        </article>
+        <article class="tarjeta">
+          <p class="kpi__etiqueta">Bajas</p>
+          <p class="kpi__valor">{{ numero(t.bajas) }}</p>
+        </article>
+      </div>
+
+      <div class="tablero">
+        <!-- Facturado vs. cobrado -->
+        <article class="tarjeta tarjeta--grafico ancho-8">
+          <div class="grafico-cabeza">
+            <div>
+              <h2 class="tarjeta__titulo">Facturado vs. cobrado</h2>
+              <p>Facturado por fecha de emisión; cobrado por fecha de pago</p>
+            </div>
+            <div class="leyenda">
+              <span><span class="leyenda__linea" style="background: var(--serie-1)"></span>Facturado</span>
+              <span><span class="leyenda__linea" style="background: var(--serie-2)"></span>Cobrado</span>
+            </div>
+          </div>
+          <app-grafico-lineas
+            [periodos]="t.facturacion.periodos"
+            [series]="t.facturacion.series"
+            [formatoEje]="pesosCorto"
+            [formatoValor]="pesos"
+            [resaltar]="resaltar()"
+            [cantidadConDatos]="t.periodosConDatos"
+          />
+        </article>
+
+        <!-- Facturas por estado y medios de pago -->
+        <div class="ancho-4 dashboard__columna">
+          <article class="tarjeta">
+            <div class="grafico-cabeza">
+              <div>
+                <h2 class="tarjeta__titulo">Facturas por estado</h2>
+                <p>{{ numero(t.totalEmitidas) }} facturas emitidas en el período</p>
+              </div>
+            </div>
+            <app-barra-segmentada [partes]="t.estados" />
+          </article>
+          <article class="tarjeta">
+            <div class="grafico-cabeza">
+              <div>
+                <h2 class="tarjeta__titulo">Cobrado por medio de pago</h2>
+              </div>
+            </div>
+            <app-barras [items]="t.medios" />
+          </article>
+        </div>
+
+        <!-- Altas, bajas e instalaciones -->
+        <article class="tarjeta ancho-12">
+          <div class="grafico-cabeza">
+            <div>
+              <h2 class="tarjeta__titulo">Altas, bajas e instalaciones</h2>
+              <p>Contrataciones nuevas, dadas de baja e instalaciones realizadas</p>
+            </div>
+            <div class="dashboard__acciones">
+              <div class="leyenda">
+                <span><span class="leyenda__linea" style="background: var(--serie-1)"></span>Altas</span>
+                <span><span class="leyenda__linea" style="background: var(--serie-2)"></span>Bajas</span>
+                <span><span class="leyenda__linea" style="background: var(--serie-3)"></span>Instalaciones</span>
+              </div>
+              <button
+                type="button"
+                class="boton boton--chico"
+                [attr.aria-expanded]="verTabla()"
+                (click)="verTabla.set(!verTabla())"
+              >
+                {{ verTabla() ? 'Ocultar tabla' : 'Ver tabla' }}
+              </button>
+            </div>
+          </div>
+          <app-grafico-lineas
+            [periodos]="t.movimientos.periodos"
+            [series]="t.movimientos.series"
+            [resaltar]="resaltar()"
+            [cantidadConDatos]="t.periodosConDatos"
+          />
+          @if (verTabla()) {
+            <div class="tabla-serie">
+              <table class="tabla">
+                <thead>
+                  <tr>
+                    <th>Período</th>
+                    @for (serie of t.movimientos.series; track serie.nombre) {
+                      <th>{{ serie.nombre }}</th>
+                    }
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (periodo of t.movimientos.periodos; track periodo; let i = $index) {
+                    <tr>
+                      <td>{{ etiquetaCorta(periodo) }}</td>
+                      @for (serie of t.movimientos.series; track serie.nombre) {
+                        <td>{{ numero(serie.valores[i]) }}</td>
+                      }
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </article>
+
+        <!-- Rankings -->
+        <article class="tarjeta ancho-6">
+          <div class="grafico-cabeza">
+            <div>
+              <h2 class="tarjeta__titulo">Planes más contratados</h2>
+              <p>Contrataciones nuevas del período</p>
+            </div>
+          </div>
+          <app-barras [items]="t.planes" />
+        </article>
+        <article class="tarjeta ancho-6">
+          <div class="grafico-cabeza">
+            <div>
+              <h2 class="tarjeta__titulo">Instalaciones por técnico</h2>
+              <p>Realizadas en el período</p>
+            </div>
+          </div>
+          <app-barras [items]="t.tecnicos" />
+        </article>
+
+        <!-- Datos sueltos -->
+        <article class="tarjeta ancho-12">
+          <div class="datos-sueltos">
+            @for (dato of t.datosSueltos; track dato.etiqueta) {
+              <div>
+                <p class="dato-suelto__valor">{{ dato.valor }}</p>
+                <p class="dato-suelto__etiqueta">{{ dato.etiqueta }}</p>
+              </div>
+            }
+          </div>
+        </article>
+      </div>
+    } @else if (!error()) {
+      <div class="indicadores">
+        <div class="tarjeta esqueleto indicador--principal"></div>
+        <div class="tarjeta esqueleto dashboard__esqueleto"></div>
+        <div class="tarjeta esqueleto dashboard__esqueleto"></div>
+        <div class="tarjeta esqueleto dashboard__esqueleto"></div>
+      </div>
+    }
+  </div>
+</section>

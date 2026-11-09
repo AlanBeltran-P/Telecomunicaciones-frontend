@@ -1,0 +1,50 @@
+<app-modal [titulo]="titulo()" [abierto]="abierto()" (cerrar)="cerrar.emit()">
+  <form class="modal__formulario" [formGroup]="formulario" (ngSubmit)="guardar()">
+    <label class="campo" [class.campo--error]="campoInvalido('nombre')">
+      <span class="campo__etiqueta">Nombre</span>
+      <input class="campo__control" name="nombre" formControlName="nombre" placeholder="Fibra 300" />
+      @if (campoInvalido('nombre')) {
+        <span class="campo__ayuda">Ingresá el nombre del plan.</span>
+      }
+    </label>
+
+    <label class="campo">
+      <span class="campo__etiqueta">Descripción</span>
+      <textarea
+        class="campo__control"
+        name="descripcion"
+        rows="3"
+        formControlName="descripcion"
+        placeholder="Qué incluye el plan"
+      ></textarea>
+    </label>
+
+    <label class="campo" [class.campo--error]="campoInvalido('precio')">
+      <span class="campo__etiqueta">Precio mensual (ARS)</span>
+      <input
+        class="campo__control"
+        name="precio"
+        type="number"
+        min="0"
+        step="0.01"
+        inputmode="decimal"
+        formControlName="precio"
+        placeholder="18500"
+      />
+      @if (campoInvalido('precio')) {
+        <span class="campo__ayuda">Ingresá un precio mayor a cero.</span>
+      }
+    </label>
+
+    @if (error()) {
+      <div class="alerta" role="alert">⚠ {{ error() }}</div>
+    }
+
+    <div class="modal__pie">
+      <button type="button" class="boton boton--fantasma" (click)="cerrar.emit()">Cancelar</button>
+      <button type="submit" class="boton boton--primario" [disabled]="enviando()">
+        {{ enviando() ? 'Guardando…' : 'Guardar' }}
+      </button>
+    </div>
+  </form>
+</app-modal>

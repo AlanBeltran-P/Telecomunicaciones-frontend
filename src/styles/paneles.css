@@ -229,3 +229,54 @@
 .tecnico__esqueleto {
   height: 110px;
 }
+
+/* ---------- Administrador (estilos de admin.html) ---------- */
+
+.usuario {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+}
+
+.tabla select.campo__control {
+  padding: 6px 34px 6px 12px;
+  width: auto;
+  font-size: var(--texto-sm);
+}
+
+.plan-admin {
+  display: grid;
+  gap: var(--espacio-3);
+  align-content: start;
+}
+
+.plan-admin__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-2);
+}
+
+.plan-admin__acciones {
+  display: flex;
+  gap: var(--espacio-2);
+}
+
+/* Dashboard: lo que en admin.html eran estilos sueltos */
+.dashboard__columna {
+  display: grid;
+  gap: var(--espacio-4);
+  align-content: start;
+}
+
+.dashboard__acciones {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-4);
+  flex-wrap: wrap;
+}
+
+.dashboard__esqueleto {
+  height: 110px;
+}

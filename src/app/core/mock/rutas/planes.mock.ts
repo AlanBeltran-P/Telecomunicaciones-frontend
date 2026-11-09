@@ -1,7 +1,7 @@
-import { Plan } from '../../planes/plan.model';
+import { Plan, PlanRequest } from '../../planes/plan.model';
 import { PlanMock } from '../datos/planes.mock';
 import { MockDb } from '../mock-db';
-import { ErrorMock, respuesta } from '../respuestas';
+import { ErrorMock, respuesta, sinContenido } from '../respuestas';
 import { RutaMock } from '../ruta-mock';
 
 export const RUTAS_PLANES: RutaMock[] = [
@@ -15,6 +15,34 @@ export const RUTAS_PLANES: RutaMock[] = [
     patron: /^\/planes\/(\d+)$/,
     responder: ({ parametros, db }) =>
       respuesta(aPlan(buscarPlanActivo(db, Number(parametros[0])))),
+  },
+  // ---------- Administrador ----------
+  {
+    metodo: 'POST',
+    patron: /^\/planes$/,
+    responder: ({ req, db }) => {
+      const plan: PlanMock = { ...(req.body as PlanRequest), id: db.nuevoId(), activo: true };
+      db.planes.push(plan);
+      return respuesta(aPlan(plan), 201);
+    },
+  },
+  {
+    metodo: 'PUT',
+    patron: /^\/planes\/(\d+)$/,
+    responder: ({ req, parametros, db }) => {
+      const plan = buscarPlanActivo(db, Number(parametros[0]));
+      Object.assign(plan, req.body as PlanRequest);
+      return respuesta(aPlan(plan));
+    },
+  },
+  {
+    metodo: 'DELETE',
+    patron: /^\/planes\/(\d+)$/,
+    responder: ({ parametros, db }) => {
+      // Baja lógica, como el backend: deja de ofrecerse pero no se borra
+      buscarPlanActivo(db, Number(parametros[0])).activo = false;
+      return sinContenido();
+    },
   },
 ];
 
