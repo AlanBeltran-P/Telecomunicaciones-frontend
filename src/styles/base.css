@@ -1,0 +1,247 @@
+/* Reset, fondo y animaciones compartidas */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-md);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--fuente-titulos);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: rgba(34, 211, 238, 0.3);
+}
+
+/* ---------- Fondo animado ---------- */
+
+/* Manchas de luz que flotan detrás del contenido */
+.fondo-luces {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.fondo-luces::before,
+.fondo-luces::after {
+  content: "";
+  position: absolute;
+  width: 55vmax;
+  height: 55vmax;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.28;
+  animation: flotar 22s ease-in-out infinite alternate;
+}
+
+.fondo-luces::before {
+  background: var(--cian);
+  top: -20vmax;
+  left: -15vmax;
+}
+
+.fondo-luces::after {
+  background: var(--violeta);
+  bottom: -25vmax;
+  right: -15vmax;
+  animation-delay: -11s;
+}
+
+/* Grilla en perspectiva que avanza, como una red de datos */
+.fondo-red {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 92, 246, 0.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at 50% 40%, #000 20%, transparent 75%);
+  animation: avanzar-red 18s linear infinite;
+}
+
+/* ---------- Utilidades ---------- */
+
+.texto-degradado {
+  background: var(--degradado);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.texto-suave {
+  color: var(--texto-suave);
+}
+
+.contenedor {
+  width: min(1180px, 100% - 32px);
+  margin-inline: auto;
+}
+
+.oculto {
+  display: none !important;
+}
+
+/* Hijos que entran uno detrás de otro (app.js les asigna --i) */
+.escalonado > * {
+  animation: aparecer var(--lento) var(--curva) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+/* Bloques que aparecen al entrar en pantalla (app.js agrega .revelado).
+   Solo se esconden si hay JavaScript, para no dejar contenido invisible */
+.con-js [data-revelar] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.8s var(--curva),
+    transform 0.8s var(--curva);
+  transition-delay: var(--retraso, 0ms);
+}
+
+.con-js [data-revelar].revelado {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Animaciones ---------- */
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes flotar {
+  to {
+    transform: translate(12vmax, 8vmax) scale(1.15);
+  }
+}
+
+@keyframes avanzar-red {
+  to {
+    background-position: 0 56px, 56px 0;
+  }
+}
+
+@keyframes brillo-carga {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes pulso {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(34, 211, 238, 0);
+  }
+}
+
+@keyframes girar {
+  to {
+    --angulo: 360deg;
+  }
+}
+
+@keyframes rebote-estado {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes deslizar-arriba {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Ángulo animable para los bordes giratorios */
+@property --angulo {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* Respeta a quien prefiere menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .con-js [data-revelar] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Las entradas no se animan: el contenido aparece directo */
+  .escalonado > *,
+  .vista,
+  .panel-pestana,
+  .bloque-aparece {
+    animation: none !important;
+  }
+}

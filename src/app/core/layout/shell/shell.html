@@ -1,0 +1,83 @@
+<div class="app">
+  <aside class="barra-lateral">
+    <a class="logo" routerLink="/">
+      <span class="logo__marca">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#04121a" stroke-width="2.4" stroke-linecap="round">
+          <path d="M5 12a7 7 0 0 1 14 0M8.5 12a3.5 3.5 0 0 1 7 0" />
+          <circle cx="12" cy="12" r="1.2" fill="#04121a" />
+        </svg>
+      </span>
+      Systema Tele
+    </a>
+
+    <nav class="menu">
+      @for (item of menu(); track item.ruta) {
+        <a class="menu__item" [routerLink]="item.ruta" routerLinkActive="menu__item--activo">
+          <app-icono [nombre]="item.icono" />
+          {{ item.texto }}
+        </a>
+      }
+    </nav>
+
+    <div class="perfil-zona" #zonaPerfil>
+      <div class="desplegable desplegable--arriba" [class.desplegable--abierto]="menuPerfilAbierto()">
+        <a class="desplegable__item" routerLink="perfil" (click)="menuPerfilAbierto.set(false)">
+          <app-icono nombre="perfil" />
+          Mi perfil
+        </a>
+        <button
+          type="button"
+          class="desplegable__item desplegable__item--peligro"
+          (click)="pedirConfirmacionDeSalida()"
+        >
+          <app-icono nombre="salir" />
+          Cerrar sesión
+        </button>
+      </div>
+      <button
+        type="button"
+        class="perfil"
+        aria-label="Menú de perfil"
+        [attr.aria-expanded]="menuPerfilAbierto()"
+        (click)="alternarMenuPerfil()"
+      >
+        <span class="avatar">{{ iniciales() }}</span>
+        <div class="perfil__texto">
+          <div class="perfil__nombre">{{ perfil()?.nombre }}</div>
+          <div class="perfil__rol">{{ nombreDelRol() }}</div>
+        </div>
+        <svg
+          class="perfil__flecha"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        >
+          <path d="m6 15 6-6 6 6" />
+        </svg>
+      </button>
+    </div>
+  </aside>
+
+  <main class="contenido">
+    <router-outlet />
+  </main>
+</div>
+
+<app-modal
+  titulo="¿Cerrar sesión?"
+  descripcion="Para volver a entrar vas a necesitar tu email y contraseña."
+  ancho="min(420px, 100%)"
+  [abierto]="confirmandoSalida()"
+  (cerrar)="confirmandoSalida.set(false)"
+>
+  <div class="modal__pie">
+    <button type="button" class="boton boton--fantasma" (click)="confirmandoSalida.set(false)">
+      Cancelar
+    </button>
+    <button type="button" class="boton boton--primario" (click)="cerrarSesion()">
+      Cerrar sesión
+    </button>
+  </div>
+</app-modal>

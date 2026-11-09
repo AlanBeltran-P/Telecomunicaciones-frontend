@@ -1,0 +1,4 @@
+/* Estilos globales: los mismos del prototipo (diseno/css) */
+@import './styles/tokens.css';
+@import './styles/base.css';
+@import './styles/componentes.css';
