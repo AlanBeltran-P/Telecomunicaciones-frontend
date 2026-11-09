@@ -7,6 +7,9 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { Observable, firstValueFrom } from 'rxjs';
 import { Perfil } from '../auth/auth.model';
+import { Contratacion } from '../contrataciones/contratacion.model';
+import { DebitoAutomatico, Factura } from '../facturacion/factura.model';
+import { Notificacion } from '../notificaciones/notificacion.model';
 import { Plan } from '../planes/plan.model';
 import { mockInterceptor } from './mock.interceptor';
 
@@ -87,5 +90,82 @@ describe('mockInterceptor', () => {
     const error = await errorDe(http.get('/api/no-existe'));
     expect(error.status).toBe(404);
     expect(error.error.detail).toBe('El modo mock no tiene GET /no-existe');
+  });
+
+  describe('área del cliente', () => {
+    beforeEach(async () => {
+      await firstValueFrom(http.post('/api/auth/login', ANA));
+    });
+
+    it('Ana ve solo sus contrataciones, la más nueva primero', async () => {
+      const suyas = await firstValueFrom(http.get<Contratacion[]>('/api/contrataciones/mias'));
+      expect(suyas.map((c) => c.planNombre)).toEqual(['Fibra + TV', 'Fibra 1000', 'Fibra 300']);
+    });
+
+    it('contrata un plan nuevo y queda pendiente de instalación', async () => {
+      const nueva = await firstValueFrom(
+        http.post<Contratacion>('/api/contrataciones', { planId: 4, direccion: 'Mitre 10' }),
+      );
+      expect(nueva.estado).toBe('PENDIENTE_INSTALACION');
+      const suyas = await firstValueFrom(http.get<Contratacion[]>('/api/contrataciones/mias'));
+      expect(suyas.length).toBe(4);
+    });
+
+    it('no deja contratar dos veces el mismo plan', async () => {
+      const error = await errorDe(
+        http.post('/api/contrataciones', { planId: 1, direccion: 'Mitre 10' }),
+      );
+      expect(error.status).toBe(409);
+      expect(error.error.detail).toBe('Ya tenés contratado el plan Fibra 300');
+    });
+
+    it('paga una factura y no deja pagarla dos veces', async () => {
+      const pago = { medio: 'MERCADO_PAGO', tokenDePago: 'tok' };
+      const pagada = await firstValueFrom(http.post<Factura>('/api/facturas/1/pagos', pago));
+      expect(pagada.estado).toBe('PAGADA');
+      expect(pagada.medioDePago).toBe('MERCADO_PAGO');
+
+      const error = await errorDe(http.post('/api/facturas/1/pagos', pago));
+      expect(error.status).toBe(409);
+      expect(error.error.detail).toBe('La factura 1 ya está pagada');
+    });
+
+    it('rechaza el pago con el token "rechazado", como la pasarela simulada', async () => {
+      const error = await errorDe(
+        http.post('/api/facturas/2/pagos', { medio: 'PAYPAL', tokenDePago: 'rechazado' }),
+      );
+      expect(error.status).toBe(402);
+    });
+
+    it('no deja pagar la factura de otro cliente', async () => {
+      const error = await errorDe(
+        http.post('/api/facturas/5/pagos', { medio: 'PAYPAL', tokenDePago: 'tok' }),
+      );
+      expect(error.status).toBe(404);
+      expect(error.error.detail).toBe('No existe la factura 5');
+    });
+
+    it('activa, consulta y desactiva el débito automático', async () => {
+      const sinDebito = await errorDe(http.get('/api/facturas/debito-automatico'));
+      expect(sinDebito.status).toBe(404);
+
+      const pago = { medio: 'TARJETA_CREDITO', tokenDePago: 'tok' };
+      await firstValueFrom(http.put('/api/facturas/debito-automatico', pago));
+      const activo = await firstValueFrom(
+        http.get<DebitoAutomatico>('/api/facturas/debito-automatico'),
+      );
+      expect(activo.medio).toBe('TARJETA_CREDITO');
+
+      await firstValueFrom(http.delete('/api/facturas/debito-automatico'));
+      const otraVez = await errorDe(http.get('/api/facturas/debito-automatico'));
+      expect(otraVez.status).toBe(404);
+    });
+
+    it('marca una notificación como leída', async () => {
+      await firstValueFrom(http.put('/api/notificaciones/1/leida', null));
+      const avisos = await firstValueFrom(http.get<Notificacion[]>('/api/notificaciones/mias'));
+      expect(avisos.find((aviso) => aviso.id === 1)?.leida).toBe(true);
+      expect(avisos[0].asunto).toBe('Nueva factura de Fibra 300');
+    });
   });
 });

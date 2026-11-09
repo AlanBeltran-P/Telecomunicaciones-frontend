@@ -1,4 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Contratacion } from '../contrataciones/contratacion.model';
+import { CONTRATACIONES_MOCK } from './datos/contrataciones.mock';
+import { DebitoMock, FACTURAS_MOCK, FacturaMock } from './datos/facturas.mock';
+import { NOTIFICACIONES_MOCK, NotificacionMock } from './datos/notificaciones.mock';
 import { ErrorMock } from './respuestas';
 import { PLANES_MOCK, PlanMock } from './datos/planes.mock';
 import { USUARIOS_MOCK, UsuarioMock } from './datos/usuarios.mock';
@@ -14,6 +18,10 @@ const CLAVE_SESION = 'systema-tele.mock.sesion';
 export class MockDb {
   usuarios: UsuarioMock[] = structuredClone(USUARIOS_MOCK);
   planes: PlanMock[] = structuredClone(PLANES_MOCK);
+  contrataciones: Contratacion[] = structuredClone(CONTRATACIONES_MOCK);
+  facturas: FacturaMock[] = structuredClone(FACTURAS_MOCK);
+  notificaciones: NotificacionMock[] = structuredClone(NOTIFICACIONES_MOCK);
+  debitos: DebitoMock[] = [];
   private ultimoId = 1000;
 
   nuevoId(): number {

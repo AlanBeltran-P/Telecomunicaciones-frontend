@@ -1,0 +1,48 @@
+<app-modal
+  titulo="Contratar un plan"
+  descripcion="Te avisamos cuando asignemos un técnico para la instalación."
+  [abierto]="abierto()"
+  (cerrar)="cancelar()"
+>
+  <form class="modal__formulario" [formGroup]="formulario" (ngSubmit)="contratar()">
+    <label class="campo" [class.campo--error]="campoInvalido('planId')">
+      <span class="campo__etiqueta">Plan</span>
+      <select class="campo__control" name="planId" formControlName="planId">
+        <option [ngValue]="null" disabled>Elegí un plan</option>
+        @for (plan of planes.value(); track plan.id) {
+          <option [ngValue]="plan.id">
+            {{ plan.nombre }} — {{ plan.precio | currency: 'ARS' : 'symbol-narrow' : '1.0-2' }} / mes
+          </option>
+        }
+      </select>
+      @if (campoInvalido('planId')) {
+        <span class="campo__ayuda">Elegí el plan que querés contratar.</span>
+      }
+    </label>
+
+    <label class="campo" [class.campo--error]="campoInvalido('direccion')">
+      <span class="campo__etiqueta">Dirección de instalación</span>
+      <input
+        class="campo__control"
+        name="direccion"
+        formControlName="direccion"
+        placeholder="Calle, número, piso, ciudad"
+        autocomplete="street-address"
+      />
+      @if (campoInvalido('direccion')) {
+        <span class="campo__ayuda">Ingresá la dirección donde hacemos la instalación.</span>
+      }
+    </label>
+
+    @if (error()) {
+      <div class="alerta" role="alert">⚠ {{ error() }}</div>
+    }
+
+    <div class="modal__pie">
+      <button type="button" class="boton boton--fantasma" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="boton boton--primario" [disabled]="enviando()">
+        {{ enviando() ? 'Contratando…' : 'Contratar' }}
+      </button>
+    </div>
+  </form>
+</app-modal>

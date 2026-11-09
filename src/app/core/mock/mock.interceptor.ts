@@ -11,13 +11,22 @@ import { MockDb } from './mock-db';
 import { ErrorMock } from './respuestas';
 import { RutaMock } from './ruta-mock';
 import { RUTAS_AUTH } from './rutas/auth.mock';
+import { RUTAS_CONTRATACIONES } from './rutas/contrataciones.mock';
+import { RUTAS_FACTURAS } from './rutas/facturas.mock';
+import { RUTAS_NOTIFICACIONES } from './rutas/notificaciones.mock';
 import { RUTAS_PLANES } from './rutas/planes.mock';
 
 /** Demora para que se vean los estados de carga, como con un backend real. */
 const DEMORA_MS = 300;
 
 // Cada etapa suma acá sus rutas (planes, facturas, contrataciones, reportes...)
-const RUTAS: RutaMock[] = [...RUTAS_AUTH, ...RUTAS_PLANES];
+const RUTAS: RutaMock[] = [
+  ...RUTAS_AUTH,
+  ...RUTAS_PLANES,
+  ...RUTAS_CONTRATACIONES,
+  ...RUTAS_FACTURAS,
+  ...RUTAS_NOTIFICACIONES,
+];
 
 /** Modo mock: responde los pedidos a /api con datos en memoria, sin llamar al backend. */
 export const mockInterceptor: HttpInterceptorFn = (req, next) => {

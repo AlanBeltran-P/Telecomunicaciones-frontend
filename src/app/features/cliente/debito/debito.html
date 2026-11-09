@@ -1,0 +1,84 @@
+<section class="vista">
+  <header class="encabezado">
+    <div>
+      <h1>Débito <span class="texto-degradado">automático</span></h1>
+      <p class="texto-suave">Cobramos tus facturas solas, sin que tengas que hacer nada.</p>
+    </div>
+  </header>
+
+  <div class="debito__contenido">
+    @if (debito.error()) {
+      <div class="alerta" role="alert">
+        ⚠ No pudimos consultar tu débito automático. Probá de nuevo en unos minutos.
+      </div>
+    } @else if (debito.isLoading()) {
+      <div class="tarjeta esqueleto debito__esqueleto"></div>
+    } @else if (debito.value(); as activo) {
+      <article class="tarjeta debito">
+        <div class="debito__medio">
+          <span class="medio__icono debito__icono">{{ opcionDeMedio(activo.medio).sigla }}</span>
+          <div>
+            <h2 class="tarjeta__titulo debito__titulo">{{ opcionDeMedio(activo.medio).nombre }}</h2>
+            <p class="texto-suave">
+              Débito automático activo desde el {{ activo.fechaAlta | date: 'dd/MM/yyyy' }}
+            </p>
+          </div>
+        </div>
+        <span class="insignia insignia--activa">Activo</span>
+      </article>
+      <div class="debito__acciones">
+        <button type="button" class="boton" (click)="abrirEleccion()">Cambiar medio de pago</button>
+        <button
+          type="button"
+          class="boton boton--peligro"
+          [disabled]="enviando()"
+          (click)="desactivar()"
+        >
+          Quitar y desactivar
+        </button>
+      </div>
+    } @else {
+      <article class="tarjeta estado-vacio">
+        <span class="estado-vacio__icono"><app-icono nombre="tarjeta" /></span>
+        <h2 class="tarjeta__titulo">Todavía no agregaste un medio de pago</h2>
+        <p class="texto-suave">
+          Agregá una tarjeta, Mercado Pago o PayPal y cobramos cada factura sola.
+        </p>
+        <button
+          type="button"
+          class="boton boton--primario boton--grande"
+          (click)="abrirEleccion()"
+        >
+          + Agregar medio de pago
+        </button>
+      </article>
+    }
+  </div>
+</section>
+
+<app-modal
+  titulo="Medio de pago"
+  descripcion="Lo usamos para cobrar cada factura con débito automático."
+  [abierto]="eligiendoMedio()"
+  (cerrar)="eligiendoMedio.set(false)"
+>
+  <app-selector-de-medio nombre="medio-debito" [(medio)]="medio" />
+  <div class="formulario-proveedor">
+    <span class="formulario-proveedor__titulo">🔒 Formulario seguro del proveedor de pagos</span>
+    <span class="campo__ayuda">
+      Acá se va a cargar el formulario de Mercado Pago, PayPal o del procesador de tarjetas. Los
+      datos de la tarjeta nunca llegan a nuestros servidores.
+    </span>
+  </div>
+  @if (error()) {
+    <div class="alerta" role="alert">⚠ {{ error() }}</div>
+  }
+  <div class="modal__pie">
+    <button type="button" class="boton boton--fantasma" (click)="eligiendoMedio.set(false)">
+      Cancelar
+    </button>
+    <button type="button" class="boton boton--primario" [disabled]="enviando()" (click)="guardar()">
+      {{ enviando() ? 'Guardando…' : 'Guardar y activar' }}
+    </button>
+  </div>
+</app-modal>

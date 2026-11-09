@@ -1,0 +1,75 @@
+<section class="vista">
+  <header class="encabezado">
+    <div>
+      <h1>Mis <span class="texto-degradado">planes</span></h1>
+      <p class="texto-suave">Tus servicios contratados y en qué estado están.</p>
+    </div>
+  </header>
+
+  @if (lista.error()) {
+    <div class="alerta" role="alert">
+      ⚠ No pudimos cargar tus planes. Probá de nuevo en unos minutos.
+    </div>
+  } @else if (lista.isLoading()) {
+    <div class="grilla">
+      <div class="tarjeta esqueleto mis-planes__esqueleto"></div>
+      <div class="tarjeta esqueleto mis-planes__esqueleto"></div>
+      <div class="tarjeta esqueleto mis-planes__esqueleto"></div>
+    </div>
+  } @else if (lista.value().length === 0) {
+    <article class="tarjeta estado-vacio">
+      <span class="estado-vacio__icono"><app-icono nombre="wifi" /></span>
+      <h2 class="tarjeta__titulo">Todavía no contrataste ningún plan</h2>
+      <p class="texto-suave">Tocá "+ Contratar plan", arriba, para elegir uno del catálogo.</p>
+    </article>
+  } @else {
+    <div class="grilla escalonado">
+      @for (contratacion of lista.value(); track contratacion.id) {
+        <article class="tarjeta tarjeta--interactiva contratacion" [style.--i]="$index">
+          <div class="contratacion__cabeza">
+            <h3 class="tarjeta__titulo">{{ contratacion.planNombre }}</h3>
+            <span class="insignia" [class]="insignia[contratacion.estado].clase">
+              {{ insignia[contratacion.estado].texto }}
+            </span>
+          </div>
+          <p class="contratacion__dato">{{ contratacion.direccion }}</p>
+          @switch (contratacion.estado) {
+            @case ('PENDIENTE_INSTALACION') {
+              <p class="contratacion__dato">
+                Contratado el {{ contratacion.fechaContratacion | date: 'dd/MM/yyyy' }} ·
+                <span class="monto">{{
+                  contratacion.precioMensual | currency: 'ARS' : 'symbol-narrow' : '1.0-2'
+                }}</span
+                >/mes
+              </p>
+              <app-pasos-de-instalacion />
+            }
+            @case ('SUSPENDIDA_POR_FALTA_DE_PAGO') {
+              <p class="contratacion__dato">
+                Suspendida el {{ contratacion.fechaSuspension | date: 'dd/MM/yyyy' }} por falta de
+                pago. Pagá la factura vencida y te la reactivamos.
+              </p>
+              <a class="boton boton--chico mis-planes__accion" routerLink="/cliente/facturas">
+                Ver factura
+              </a>
+            }
+            @case ('BAJA') {
+              <p class="contratacion__dato">
+                Dada de baja el {{ contratacion.fechaBaja | date: 'dd/MM/yyyy' }}
+              </p>
+            }
+            @default {
+              <p class="contratacion__dato">
+                Desde el {{ contratacion.fechaContratacion | date: 'dd/MM/yyyy' }} ·
+                <span class="monto">{{
+                  contratacion.precioMensual | currency: 'ARS' : 'symbol-narrow' : '1.0-2'
+                }}</span
+                >/mes
+              </p>
+            }
+          }
+        </article>
+      }
+    </div>
+  }
+</section>

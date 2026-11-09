@@ -1,0 +1,104 @@
+<section class="vista">
+  <header class="encabezado">
+    <div>
+      <p class="texto-suave inicio__fecha">{{ hoy | date: "EEEE d 'de' MMMM" }}</p>
+      <h1>
+        Hola, <span class="texto-degradado">{{ primerNombre() }}</span>
+      </h1>
+    </div>
+  </header>
+
+  @if (resumen.error()) {
+    <div class="alerta" role="alert">
+      ⚠ No pudimos cargar tu resumen. Probá de nuevo en unos minutos.
+    </div>
+  } @else if (resumen.value(); as datos) {
+    <div class="grilla escalonado">
+      <article class="tarjeta" style="--i: 0">
+        <span class="kpi__icono"><app-icono nombre="wifi" /></span>
+        <p class="kpi__etiqueta">Planes activos</p>
+        <p class="kpi__valor" [appContar]="datos.planesActivos"></p>
+      </article>
+      <article class="tarjeta" style="--i: 1">
+        <span class="kpi__icono"><app-icono nombre="tarjeta" /></span>
+        <p class="kpi__etiqueta">Total a pagar</p>
+        <p class="kpi__valor texto-degradado">
+          {{ datos.totalAPagar | currency: 'ARS' : 'symbol-narrow' : '1.0-2' }}
+        </p>
+      </article>
+      <article class="tarjeta" style="--i: 2">
+        <span class="kpi__icono"><app-icono nombre="calendario" /></span>
+        <p class="kpi__etiqueta">Próximo vencimiento</p>
+        <p class="kpi__valor">
+          {{ datos.proximoVencimiento ? (datos.proximoVencimiento | date: 'd MMM') : '—' }}
+        </p>
+      </article>
+    </div>
+
+    <div class="dos-columnas escalonado">
+      @let alDia = datos.vencidas.length === 0 && datos.suspendidas.length === 0 && !datos.sinDebito;
+      <article class="tarjeta" [class.atencion]="!alDia" style="--i: 0">
+        <h2 class="tarjeta__titulo">{{ alDia ? 'Todo en orden' : 'Requiere tu atención' }}</h2>
+        @for (factura of datos.vencidas; track factura.id) {
+          <div class="fila-resumen">
+            <div>
+              <strong>Factura de {{ factura.periodoDesde | date: 'MMMM' }} vencida</strong><br />
+              <span class="texto-suave">
+                {{ factura.planNombre }} ·
+                {{ factura.monto | currency: 'ARS' : 'symbol-narrow' : '1.0-2' }}
+              </span>
+            </div>
+            <span class="insignia insignia--vencida">Vencida</span>
+          </div>
+        }
+        @for (contratacion of datos.suspendidas; track contratacion.id) {
+          <div class="fila-resumen">
+            <div>
+              <strong>{{ contratacion.planNombre }} suspendida</strong><br />
+              <span class="texto-suave">Pagá la factura vencida y te la reactivamos</span>
+            </div>
+            <span class="insignia insignia--suspendida">Suspendida</span>
+          </div>
+        }
+        @if (datos.sinDebito) {
+          <div class="fila-resumen">
+            <div>
+              <strong>No agregaste un medio de pago</strong><br />
+              <span class="texto-suave">
+                Activá el débito automático y no te preocupes por los vencimientos
+              </span>
+            </div>
+            <a class="boton boton--chico" routerLink="/cliente/debito">Agregar</a>
+          </div>
+        }
+        @if (alDia) {
+          <p class="texto-suave">No tenés facturas vencidas ni planes suspendidos.</p>
+        }
+        @if (datos.vencidas.length > 0) {
+          <a class="boton boton--primario inicio__ir" routerLink="/cliente/facturas">
+            Ir a facturas
+          </a>
+        }
+      </article>
+
+      @if (datos.instalacion; as instalacion) {
+        <article class="tarjeta contratacion" style="--i: 1">
+          <div class="contratacion__cabeza">
+            <h2 class="tarjeta__titulo">Tu instalación</h2>
+            <span class="insignia insignia--instalacion">En curso</span>
+          </div>
+          <p class="contratacion__dato">
+            {{ instalacion.planNombre }} · {{ instalacion.direccion }}
+          </p>
+          <app-pasos-de-instalacion />
+        </article>
+      }
+    </div>
+  } @else {
+    <div class="grilla">
+      <div class="tarjeta esqueleto inicio__esqueleto"></div>
+      <div class="tarjeta esqueleto inicio__esqueleto"></div>
+      <div class="tarjeta esqueleto inicio__esqueleto"></div>
+    </div>
+  }
+</section>

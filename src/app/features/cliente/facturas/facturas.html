@@ -1,0 +1,76 @@
+<section class="vista">
+  <header class="encabezado">
+    <div>
+      <h1><span class="texto-degradado">Facturas</span></h1>
+      <p class="texto-suave">Se emiten una vez por mes y vencen a los 10 días.</p>
+    </div>
+  </header>
+
+  @if (facturas.error()) {
+    <div class="alerta" role="alert">
+      ⚠ No pudimos cargar tus facturas. Probá de nuevo en unos minutos.
+    </div>
+  } @else if (facturas.isLoading()) {
+    <div class="tarjeta esqueleto facturas__esqueleto"></div>
+  } @else if (facturas.value().length === 0) {
+    <article class="tarjeta estado-vacio">
+      <span class="estado-vacio__icono"><app-icono nombre="factura" /></span>
+      <h2 class="tarjeta__titulo">Todavía no tenés facturas</h2>
+      <p class="texto-suave">La primera llega con el cierre del mes en que contrataste.</p>
+    </article>
+  } @else {
+    <div class="tarjeta tabla-envoltura facturas__tabla">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Período</th>
+            <th>Plan</th>
+            <th>Monto</th>
+            <th>Vence</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (factura of facturas.value(); track factura.id) {
+            <tr>
+              <td>{{ factura.periodoDesde | date: 'MMMM y' | titlecase }}</td>
+              <td>{{ factura.planNombre }}</td>
+              <td class="monto">
+                {{ factura.monto | currency: 'ARS' : 'symbol-narrow' : '1.0-2' }}
+              </td>
+              <td>{{ factura.fechaVencimiento | date: 'dd/MM/yyyy' }}</td>
+              <td>
+                <span class="insignia" [class]="insignia[factura.estado].clase">
+                  {{ insignia[factura.estado].texto }}
+                </span>
+              </td>
+              <td>
+                @if (factura.estado === 'PAGADA') {
+                  <span class="texto-suave facturas__pago">
+                    {{ factura.fechaPago | date: 'dd/MM' }} ·
+                    {{ nombreDelMedio(factura.medioDePago) }}
+                  </span>
+                } @else {
+                  <button
+                    type="button"
+                    class="boton boton--primario boton--chico"
+                    (click)="aPagar.set(factura)"
+                  >
+                    Pagar
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+<app-pagar-factura
+  [factura]="aPagar()"
+  (pagada)="registrarPago($event)"
+  (cerrar)="aPagar.set(null)"
+/>

@@ -1,0 +1,35 @@
+@let actual = factura();
+<app-modal
+  titulo="Pagar factura"
+  descripcion="Elegí cómo querés pagar."
+  [abierto]="actual !== null"
+  (cerrar)="cancelar()"
+>
+  @if (actual) {
+    <div class="fila-resumen">
+      <span>{{ actual.planNombre }} · {{ actual.periodoDesde | date: 'MMMM y' | titlecase }}</span>
+      <strong class="monto">
+        {{ actual.monto | currency: 'ARS' : 'symbol-narrow' : '1.0-2' }}
+      </strong>
+    </div>
+    <app-selector-de-medio nombre="medio-pago" [(medio)]="medio" />
+    <div class="nota-segura">
+      🔒 Los datos de la tarjeta los carga el proveedor de pagos en su formulario seguro. Nunca
+      pasan por nuestros servidores.
+    </div>
+    @if (error()) {
+      <div class="alerta" role="alert">⚠ {{ error() }}</div>
+    }
+    <div class="modal__pie">
+      <button type="button" class="boton boton--fantasma" (click)="cancelar()">Cancelar</button>
+      <button
+        type="button"
+        class="boton boton--primario"
+        [disabled]="enviando()"
+        (click)="confirmar(actual)"
+      >
+        {{ enviando() ? 'Pagando…' : 'Confirmar pago' }}
+      </button>
+    </div>
+  }
+</app-modal>

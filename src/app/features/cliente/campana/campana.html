@@ -1,0 +1,55 @@
+<button
+  type="button"
+  class="campana"
+  aria-label="Notificaciones"
+  [attr.aria-expanded]="abierto()"
+  (click)="alternar()"
+>
+  <app-icono nombre="campana" />
+  @if (notificaciones.noLeidas() > 0) {
+    <span class="campana__contador">{{ notificaciones.noLeidas() }}</span>
+  }
+</button>
+
+<div class="desplegable panel-notificaciones" [class.desplegable--abierto]="abierto()">
+  <div class="panel-notificaciones__cabeza">
+    <strong>Notificaciones</strong>
+    <button
+      type="button"
+      class="boton boton--fantasma boton--chico"
+      [disabled]="notificaciones.noLeidas() === 0"
+      (click)="notificaciones.marcarTodas()"
+    >
+      Marcar todas como leídas
+    </button>
+  </div>
+  <div class="panel-notificaciones__lista">
+    @for (aviso of ultimas(); track aviso.id) {
+      <div
+        class="notificacion"
+        role="button"
+        tabindex="0"
+        [class.notificacion--leida]="aviso.leida"
+        (click)="notificaciones.marcarLeida(aviso)"
+        (keydown.enter)="notificaciones.marcarLeida(aviso)"
+      >
+        <span class="notificacion__punto"></span>
+        <div>
+          <p class="notificacion__asunto">{{ aviso.asunto }}</p>
+          <p class="notificacion__mensaje">{{ aviso.mensaje }}</p>
+          <p class="notificacion__fecha">{{ aviso.fecha | date: 'dd/MM · HH:mm' }}</p>
+        </div>
+      </div>
+    } @empty {
+      <p class="texto-suave campana__vacia">No tenés notificaciones.</p>
+    }
+  </div>
+  <div class="panel-notificaciones__pie">
+    <a
+      class="boton boton--fantasma boton--chico"
+      routerLink="/cliente/notificaciones"
+      (click)="abierto.set(false)"
+      >Ver todas →</a
+    >
+  </div>
+</div>

@@ -1,0 +1,10 @@
+<div class="barra-superior">
+  <app-campana />
+  <button type="button" class="boton boton--primario" (click)="contratando.set(true)">
+    + Contratar plan
+  </button>
+</div>
+
+<router-outlet />
+
+<app-contratar-plan [abierto]="contratando()" (cerrar)="contratando.set(false)" />
