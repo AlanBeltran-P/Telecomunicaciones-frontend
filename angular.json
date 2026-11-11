@@ -59,6 +59,14 @@
                   "with": "src/environments/environment.mock.ts"
                 }
               ]
+            },
+            "demo": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.mock.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
