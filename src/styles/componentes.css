@@ -1210,3 +1210,33 @@ select.campo__control {
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- Carga de página ---------- */
+.carga-de-pagina {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  background: rgba(5, 7, 15, 0.75);
+  backdrop-filter: blur(10px);
+  animation: aparecer-carga var(--rapido) ease-out;
+}
+
+.carga-de-pagina__logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  animation: pulso 1.2s ease-in-out infinite;
+}
+
+.carga-de-pagina__logo svg {
+  width: 32px;
+  height: 32px;
+}
+
+@keyframes aparecer-carga {
+  from {
+    opacity: 0;
+  }
+}

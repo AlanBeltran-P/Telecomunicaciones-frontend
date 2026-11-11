@@ -1,3 +1,4 @@
+import { ViewportScroller } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../environments/environment';
@@ -45,4 +46,13 @@ export class Home {
     'Salta',
     'Neuquén',
   ];
+
+  constructor() {
+    // Al saltar a una sección, el header fijo no tiene que taparla
+    inject(ViewportScroller).setOffset(() => [0, this.alturaDelHeader()]);
+  }
+
+  private alturaDelHeader(): number {
+    return document.querySelector('.navegacion')?.getBoundingClientRect().height ?? 0;
+  }
 }

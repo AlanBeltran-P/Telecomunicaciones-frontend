@@ -1,7 +1,9 @@
+import { ViewportScroller } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { vi } from 'vitest';
 import { AuthService } from '../../core/auth/auth.service';
 import { Plan } from '../../core/planes/plan.model';
 import { FORMATO_ARGENTINO } from '../../shared/testing/formato-argentino';
@@ -78,6 +80,19 @@ describe('Home', () => {
     const acciones = todos('.navegacion__acciones a').map((a) => a.textContent?.trim());
     expect(acciones).toEqual(['Ingresar', 'Crear cuenta']);
     expect(todos('.plan a')[0].getAttribute('href')).toBe('/registro');
+  });
+
+  it('al saltar a una sección deja lugar para el header fijo', async () => {
+    abrir();
+    await responderPlanes(PLANES);
+    // Se agrega a la página para que querySelector('.navegacion') lo encuentre
+    document.body.appendChild(fixture.nativeElement);
+    const header = fixture.nativeElement.querySelector('.navegacion') as HTMLElement;
+    vi.spyOn(header, 'getBoundingClientRect').mockReturnValue({ height: 72 } as DOMRect);
+
+    const scroller = TestBed.inject(ViewportScroller) as unknown as { offset: () => number[] };
+    expect(scroller.offset()).toEqual([0, 72]);
+    fixture.nativeElement.remove();
   });
 
   it('con sesión lleva a la cuenta del usuario', async () => {
